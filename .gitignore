@@ -1,0 +1,5 @@
+# Visual Studio Code Build and Debug assets
+.vscode/*
+
+# Visual Studio 2019 Mac cache/options directory
+.vs/*
