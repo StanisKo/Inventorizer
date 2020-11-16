@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using Inventorizer_Models.Models;
+using Inventorizer_Models.ViewModels;
 
 namespace Inventorizer.Controllers
 {
