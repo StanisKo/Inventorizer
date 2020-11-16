@@ -1,6 +1,6 @@
 using System;
 
-namespace Inventorizer.Models
+namespace Inventorizer_Models.Models
 {
     public class ErrorViewModel
     {
