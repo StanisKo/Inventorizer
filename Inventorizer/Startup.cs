@@ -1,13 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+using Npgsql;
+
+using Inventorizer_DataAccess.Data;
 
 namespace Inventorizer
 {
@@ -20,13 +22,32 @@ namespace Inventorizer
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /*
+            We could've stored connection string in appsettings.json,
+            but to avoid having db credentials in the version control
+            we store them in dotnet user-secrets package:
+
+            https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-5.0&tabs=linux
+            */
+            NpgsqlConnectionStringBuilder connectionStringBuilder = new NpgsqlConnectionStringBuilder()
+            {
+                Host = Configuration["Host"],
+                Port = Convert.ToInt32(Configuration["Port"]),
+
+                Database = Configuration["Database"],
+                Username = Configuration["Username"],
+                Password = Configuration["Password"]
+            };
+
+            services.AddDbContext<ApplicationDbContext>(
+                options => options.UseNpgsql(connectionStringBuilder.ConnectionString)
+            );
+
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -36,10 +57,11 @@ namespace Inventorizer
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
