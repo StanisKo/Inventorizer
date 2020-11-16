@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
+using Inventorizer_Models.Models;
+
 namespace Inventorizer_DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
@@ -8,5 +10,7 @@ namespace Inventorizer_DataAccess.Data
         {
 
         }
+
+        public DbSet<Category> Categories { get; set; }
     }
 }
