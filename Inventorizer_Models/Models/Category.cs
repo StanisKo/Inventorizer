@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Inventorizer_Models.Models
@@ -9,5 +10,7 @@ namespace Inventorizer_Models.Models
 
         [Required]
         public string Name { get; set; }
+
+        public List<Item> Items { get; set; }
     }
 }

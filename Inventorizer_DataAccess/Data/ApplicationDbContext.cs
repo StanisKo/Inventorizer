@@ -14,5 +14,14 @@ namespace Inventorizer_DataAccess.Data
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Item> Items { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Setup one-to-many between category and item
+            modelBuilder.Entity<Item>()
+                .HasOne(i => i.Category)
+                .WithMany(c => c.Items)
+                .HasForeignKey(i => i.Category_Id);
+        }
     }
 }
