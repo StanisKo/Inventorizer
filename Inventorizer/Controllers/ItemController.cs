@@ -63,18 +63,23 @@ namespace Inventorizer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateOrUpdate(ItemViewModel itemViewModel)
         {
-            if (itemViewModel.Item.Item_Id == 0)
+            if (ModelState.IsValid)
             {
-                _database.Items.Add(itemViewModel.Item);
-            }
-            else
-            {
-                _database.Items.Update(itemViewModel.Item);
+                if (itemViewModel.Item.Item_Id == 0)
+                {
+                    _database.Items.Add(itemViewModel.Item);
+                }
+                else
+                {
+                    _database.Items.Update(itemViewModel.Item);
+                }
+
+                _database.SaveChanges();
+
+                return RedirectToAction(nameof(Index));
             }
 
-            _database.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
+            return View(itemViewModel);
         }
 
         public IActionResult Delete(int id)

@@ -8,7 +8,7 @@
             <h2 class="text-info">Items</h2>
         </div>
         <div class=" col-2 text-right">
-            <a asp-action="Upsert" class="btn btn-info form-control">Add</a>
+            <a asp-action="CreateOrUpdate" class="btn btn-info form-control">Add</a>
         </div>
     </div>
     <br />
@@ -20,15 +20,12 @@
                     <th>
                         Name
                     </th>
-
                     <th>
                         Price
                     </th>
-
                     <th>
                         Category
                     </th>
-
                     <th>
                         Date of Purchase
                     </th>
@@ -39,28 +36,22 @@
                     <td>
                         @item.Name
                     </td>
-
                     <td>
                         @item.Price
                     </td>
-
                     <td>
                         @item.Category.Name
                     </td>
-
                     <td>
                         @item.PurchaseDate
                     </td>
-
                     <td>
                         <a class="btn btn-primary text-white" asp-action="CreateOrUpdate" asp-route-Id="@item.Item_Id">
                             Edit
                         </a>
-
                         @* <a class="btn btn-info text-white" asp-action="Details" asp-route-Id="@item.Item_Id">
                             Details
                         </a> *@
-
                         <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.Item_Id">
                             Delete
                         </a>
