@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 
+/*
+@TODO -- Convert controller actions to async Tasks
+
+https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/controller-methods-views?view=aspnetcore-5.0
+*/
+
 namespace Inventorizer.Controllers
 {
     public class CategoryController : Controller
@@ -18,6 +24,7 @@ namespace Inventorizer.Controllers
             _database = db;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             List<Category> categories = _database.Categories.AsNoTracking().ToList();
