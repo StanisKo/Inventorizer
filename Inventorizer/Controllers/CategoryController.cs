@@ -35,7 +35,9 @@ namespace Inventorizer.Controllers
             }
 
             // Return view with category to update
-            Category categoryToEdit = _database.Categories.FirstOrDefault(c => c.Category_Id == requestedId);
+            Category categoryToEdit = _database.Categories
+                .AsNoTracking()
+                .FirstOrDefault(c => c.Category_Id == requestedId);
 
             if (categoryToEdit == null)
             {
