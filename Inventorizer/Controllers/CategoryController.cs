@@ -26,10 +26,10 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateOrUpdate(int? requestedId)
+        public IActionResult CreateOrUpdate(int? id)
         {
             // Return view with category to create
-            if (requestedId == null)
+            if (id == null)
             {
                 return View(new Category());
             }
@@ -37,7 +37,7 @@ namespace Inventorizer.Controllers
             // Return view with category to update
             Category categoryToEdit = _database.Categories
                 .AsNoTracking()
-                .FirstOrDefault(c => c.Category_Id == requestedId);
+                .FirstOrDefault(c => c.Category_Id == id);
 
             if (categoryToEdit == null)
             {
@@ -73,9 +73,9 @@ namespace Inventorizer.Controllers
             return View(category);
         }
 
-        public IActionResult Delete(int requestedId)
+        public IActionResult Delete(int id)
         {
-            Category categoryToDelete = _database.Categories.FirstOrDefault(c => c.Category_Id == requestedId);
+            Category categoryToDelete = _database.Categories.FirstOrDefault(c => c.Category_Id == id);
 
             _database.Categories.Remove(categoryToDelete);
             _database.SaveChanges();
