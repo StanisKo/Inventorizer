@@ -37,13 +37,13 @@
                     <td>
                         @item.Name
                     </td>
-                    <td>
+                    <td id="price">
                         @item.Price
                     </td>
                     <td>
                         @item.Category.Name
                     </td>
-                    <td>
+                    <td id="date-of-purchase">
                         @item.PurchaseDate
                     </td>
                     <td class="align-left">
@@ -63,7 +63,7 @@
         }
         else
         {
-            <p>There are no item yet</p>
+            <p>There are no items yet</p>
         }
     </div>
 </div>
