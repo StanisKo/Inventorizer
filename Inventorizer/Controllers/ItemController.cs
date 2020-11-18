@@ -26,6 +26,7 @@ namespace Inventorizer.Controllers
             List<Item> items = _database.Items
                 .AsNoTracking()
                 .Include(i => i.Category)
+                .Include(i => i.ItemDetail)
                 .ToList();
 
             return View(items);
@@ -43,7 +44,6 @@ namespace Inventorizer.Controllers
                 })
             };
 
-            // Create new item
             if (id == null)
             {
                 return View(itemViewModel);
@@ -70,6 +70,45 @@ namespace Inventorizer.Controllers
             else
             {
                 _database.Items.Update(itemViewModel.Item);
+            }
+
+            _database.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult CreateOrUpdateDetail(int id)
+        {
+            Item itemToCreateOrUpdateDetail = _database.Items
+                .Include(i => i.ItemDetail)
+                .FirstOrDefault(i => i.Item_Id == id);
+
+            if (itemToCreateOrUpdateDetail == null)
+            {
+                return NotFound();
+            }
+
+            return View(itemToCreateOrUpdateDetail);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateOrUpdateDetail(Item item)
+        {
+            if (item.ItemDetail.ItemDetail_Id == 0)
+            {
+                // Bind item detail with relevant item entity
+                ItemDetail itemDetailToCreate = item.ItemDetail;
+
+                itemDetailToCreate.Item_Id = item.Item_Id;
+
+                _database.Add(itemDetailToCreate);
+            }
+            else
+            {
+                _database.ItemDetails.Update(item.ItemDetail);
+
             }
 
             _database.SaveChanges();

@@ -27,6 +27,9 @@
                         Category
                     </th>
                     <th>
+                        Type
+                    </th>
+                    <th>
                         Date of Purchase
                     </th>
                     <th></th>
@@ -43,6 +46,16 @@
                     <td>
                         @item.Category.Name
                     </td>
+                    <td>
+                        @if (item.ItemDetail != null)
+                        {
+                            @item.ItemDetail.Type
+                        }
+                        else
+                        {
+                            <span>--</span>
+                        }
+                    </td>
                     <td class="date-of-purchase">
                         @item.PurchaseDate
                     </td>
@@ -50,9 +63,9 @@
                         <a class="btn btn-primary text-white" asp-action="CreateOrUpdate" asp-route-Id="@item.Item_Id">
                             Edit
                         </a>
-                        @* <a class="btn btn-info text-white" asp-action="Details" asp-route-Id="@item.Item_Id">
+                        <a class="btn btn-info text-white" asp-action="CreateOrUpdateDetail" asp-route-Id="@item.Item_Id">
                             Details
-                        </a> *@
+                        </a>
                         <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.Item_Id">
                             Delete
                         </a>
