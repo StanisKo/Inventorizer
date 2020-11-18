@@ -103,7 +103,7 @@ namespace Inventorizer.Controllers
 
                 itemDetailToCreate.Item_Id = item.Item_Id;
 
-                _database.Add(item.ItemDetail);
+                _database.Add(itemDetailToCreate);
             }
             else
             {
