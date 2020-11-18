@@ -3,15 +3,17 @@ using System;
 using Inventorizer_DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Inventorizer_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201118160341_AddForeignKeyOnItemDetailAndNavProperty")]
+    partial class AddForeignKeyOnItemDetailAndNavProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,6 +47,9 @@ namespace Inventorizer_DataAccess.Migrations
                     b.Property<int>("Category_Id")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ItemDetail_Id")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -58,6 +63,8 @@ namespace Inventorizer_DataAccess.Migrations
                     b.HasKey("Item_Id");
 
                     b.HasIndex("Category_Id");
+
+                    b.HasIndex("ItemDetail_Id");
 
                     b.ToTable("Items");
                 });
@@ -80,9 +87,6 @@ namespace Inventorizer_DataAccess.Migrations
 
                     b.HasKey("ItemDetail_Id");
 
-                    b.HasIndex("Item_Id")
-                        .IsUnique();
-
                     b.ToTable("ItemDetails");
                 });
 
@@ -94,28 +98,18 @@ namespace Inventorizer_DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Inventorizer_Models.Models.ItemDetail", "ItemDetail")
+                        .WithMany()
+                        .HasForeignKey("ItemDetail_Id");
+
                     b.Navigation("Category");
-                });
 
-            modelBuilder.Entity("Inventorizer_Models.Models.ItemDetail", b =>
-                {
-                    b.HasOne("Inventorizer_Models.Models.Item", "Item")
-                        .WithOne("ItemDetail")
-                        .HasForeignKey("Inventorizer_Models.Models.ItemDetail", "Item_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
+                    b.Navigation("ItemDetail");
                 });
 
             modelBuilder.Entity("Inventorizer_Models.Models.Category", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Inventorizer_Models.Models.Item", b =>
-                {
-                    b.Navigation("ItemDetail");
                 });
 #pragma warning restore 612, 618
         }
