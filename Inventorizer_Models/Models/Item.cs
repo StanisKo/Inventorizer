@@ -23,6 +23,8 @@ namespace Inventorizer_Models.Models
         */
         public DateTime PurchaseDate { get; set; }
 
+        public ItemDetail ItemDetail { get; set; }
+
         [ForeignKey("Category")]
         public int Category_Id { get; set; }
         public Category Category { get; set; }
