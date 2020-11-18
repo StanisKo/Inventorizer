@@ -63,11 +63,11 @@ namespace Inventorizer.Controllers
                 // Create
                 if (category.Category_Id == 0)
                 {
-                    _database.Add(category);
+                    _database.Categories.Add(category);
                 }
                 else
                 {
-                    _database.Update(category);
+                    _database.Categories.Update(category);
                 }
 
                 _database.SaveChanges();
