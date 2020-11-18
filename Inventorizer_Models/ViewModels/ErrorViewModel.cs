@@ -1,6 +1,4 @@
-using System;
-
-namespace Inventorizer.Models
+namespace Inventorizer_Models.ViewModels
 {
     public class ErrorViewModel
     {
