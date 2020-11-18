@@ -4,9 +4,13 @@
 $(() => {
     $("#datepicker").datepicker({});
 
-    $("#price").text((_, text) => `€ ${text}`);
+    $(".price").text((_, text) => {
+        const value = Number(text);
 
-    $("#date-of-purchase").text((_, text) => {
+        return `€ ${value.toFixed(2)}`;
+    });
+
+    $(".date-of-purchase").text((_, text) => {
         const dateOfPurchase = new Date(text);
 
         return `${dateOfPurchase.getDate()}-${dateOfPurchase.getMonth() + 1}-${dateOfPurchase.getFullYear()}`
