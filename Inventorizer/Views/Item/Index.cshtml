@@ -4,10 +4,10 @@
 <br />
 <div class="border p-4 bg-white">
     <div class="row">
-        <div class="col-8">
+        <div class="col-9">
             <h2 class="text-info">Items</h2>
         </div>
-        <div class=" col-2 text-right">
+        <div class=" col-3 text-right">
             <a asp-action="CreateOrUpdate" class="btn btn-info form-control">Add</a>
         </div>
     </div>
@@ -29,6 +29,7 @@
                     <th>
                         Date of Purchase
                     </th>
+                    <th></th>
                 </tr>
                 @foreach (var item in Model)
                 {
@@ -45,7 +46,7 @@
                     <td>
                         @item.PurchaseDate
                     </td>
-                    <td>
+                    <td class="align-left">
                         <a class="btn btn-primary text-white" asp-action="CreateOrUpdate" asp-route-Id="@item.Item_Id">
                             Edit
                         </a>
