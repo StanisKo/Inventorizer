@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,27 +22,27 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Item> items = _database.Items
+            List<Item> items = await _database.Items
                 .AsNoTracking()
                 .Include(i => i.Category)
                 .Include(i => i.ItemDetail)
-                .ToList();
+                .ToListAsync();
 
             return View(items);
         }
 
         [HttpGet]
-        public IActionResult CreateOrUpdate(int? id)
+        public async Task<IActionResult> CreateOrUpdate(int? id)
         {
             ItemViewModel itemViewModel = new ItemViewModel
             {
-                Categories = _database.Categories.AsNoTracking().Select(c => new SelectListItem()
+                Categories = await _database.Categories.AsNoTracking().Select(c => new SelectListItem()
                 {
                     Text = c.Name,
                     Value = c.Category_Id.ToString()
-                })
+                }).ToListAsync()
             };
 
             if (id == null)
@@ -49,7 +50,7 @@ namespace Inventorizer.Controllers
                 return View(itemViewModel);
             }
 
-            itemViewModel.Item = _database.Items.AsNoTracking().FirstOrDefault(i => i.Item_Id == id);
+            itemViewModel.Item = await _database.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Item_Id == id);
 
             if (itemViewModel.Item == null)
             {
@@ -61,7 +62,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateOrUpdate(ItemViewModel itemViewModel)
+        public async Task<IActionResult> CreateOrUpdate(ItemViewModel itemViewModel)
         {
             if (itemViewModel.Item.Item_Id == 0)
             {
@@ -72,17 +73,17 @@ namespace Inventorizer.Controllers
                 _database.Items.Update(itemViewModel.Item);
             }
 
-            _database.SaveChanges();
+            await _database.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public IActionResult CreateOrUpdateDetail(int id)
+        public async Task<IActionResult> CreateOrUpdateDetail(int id)
         {
-            Item itemToCreateOrUpdateDetail = _database.Items
+            Item itemToCreateOrUpdateDetail = await _database.Items
                 .Include(i => i.ItemDetail)
-                .FirstOrDefault(i => i.Item_Id == id);
+                .FirstOrDefaultAsync(i => i.Item_Id == id);
 
             if (itemToCreateOrUpdateDetail == null)
             {
@@ -94,7 +95,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateOrUpdateDetail(Item item)
+        public async Task<IActionResult> CreateOrUpdateDetail(Item item)
         {
             if (item.ItemDetail.ItemDetail_Id == 0)
             {
@@ -111,17 +112,18 @@ namespace Inventorizer.Controllers
 
             }
 
-            _database.SaveChanges();
+            await _database.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Item itemToDelete = _database.Items.FirstOrDefault(i => i.Item_Id == id);
+            Item itemToDelete = await _database.Items.FirstOrDefaultAsync(i => i.Item_Id == id);
 
             _database.Items.Remove(itemToDelete);
-            _database.SaveChanges();
+
+            await _database.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

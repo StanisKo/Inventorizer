@@ -1,12 +1,11 @@
-using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
+using Inventorizer_DataAccess.Data;
 
 namespace Inventorizer.Controllers
 {
