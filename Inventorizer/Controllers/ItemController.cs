@@ -37,7 +37,7 @@ namespace Inventorizer.Controllers
         {
             ItemViewModel itemViewModel = new ItemViewModel
             {
-                Categories = _database.Categories.Select(c => new SelectListItem()
+                Categories = _database.Categories.AsNoTracking().Select(c => new SelectListItem()
                 {
                     Text = c.Name,
                     Value = c.Category_Id.ToString()
@@ -49,7 +49,7 @@ namespace Inventorizer.Controllers
                 return View(itemViewModel);
             }
 
-            itemViewModel.Item = _database.Items.FirstOrDefault(i => i.Item_Id == id);
+            itemViewModel.Item = _database.Items.AsNoTracking().FirstOrDefault(i => i.Item_Id == id);
 
             if (itemViewModel.Item == null)
             {
@@ -103,7 +103,7 @@ namespace Inventorizer.Controllers
 
                 itemDetailToCreate.Item_Id = item.Item_Id;
 
-                _database.Add(itemDetailToCreate);
+                _database.ItemDetails.Add(itemDetailToCreate);
             }
             else
             {

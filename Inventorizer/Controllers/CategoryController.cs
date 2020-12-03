@@ -7,12 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 
-/*
-@TODO -- Convert controller actions to async Tasks
-
-https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/controller-methods-views?view=aspnetcore-5.0
-*/
-
 namespace Inventorizer.Controllers
 {
     public class CategoryController : Controller
@@ -35,13 +29,11 @@ namespace Inventorizer.Controllers
         [HttpGet]
         public IActionResult CreateOrUpdate(int? id)
         {
-            // Return view with category to create
             if (id == null)
             {
                 return View(new Category());
             }
 
-            // Return view with category to update
             Category categoryToEdit = _database.Categories
                 .AsNoTracking()
                 .FirstOrDefault(c => c.Category_Id == id);
@@ -72,11 +64,9 @@ namespace Inventorizer.Controllers
 
                 _database.SaveChanges();
 
-                // Redirect back to index
                 return RedirectToAction(nameof(Index));
             }
 
-            // If the model is not valid, we return the passed category object back with the view
             return View(category);
         }
 
