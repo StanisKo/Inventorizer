@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,24 +20,24 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Category> categories = _database.Categories.AsNoTracking().ToList();
+            List<Category> categories =  await _database.Categories.AsNoTracking().ToListAsync();
 
             return View(categories);
         }
 
         [HttpGet]
-        public IActionResult CreateOrUpdate(int? id)
+        public async Task<IActionResult> CreateOrUpdate(int? id)
         {
             if (id == null)
             {
                 return View(new Category());
             }
 
-            Category categoryToEdit = _database.Categories
+            Category categoryToEdit = await _database.Categories
                 .AsNoTracking()
-                .FirstOrDefault(c => c.Category_Id == id);
+                .FirstOrDefaultAsync(c => c.Category_Id == id);
 
             if (categoryToEdit == null)
             {
@@ -48,11 +49,10 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateOrUpdate(Category category)
+        public async Task<IActionResult> CreateOrUpdate(Category category)
         {
             if (ModelState.IsValid)
             {
-                // Create
                 if (category.Category_Id == 0)
                 {
                     _database.Categories.Add(category);
@@ -62,7 +62,7 @@ namespace Inventorizer.Controllers
                     _database.Categories.Update(category);
                 }
 
-                _database.SaveChanges();
+                await _database.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -70,12 +70,13 @@ namespace Inventorizer.Controllers
             return View(category);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Category categoryToDelete = _database.Categories.FirstOrDefault(c => c.Category_Id == id);
+            Category categoryToDelete = await _database.Categories.FirstOrDefaultAsync(c => c.Category_Id == id);
 
             _database.Categories.Remove(categoryToDelete);
-            _database.SaveChanges();
+            
+            await _database.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
