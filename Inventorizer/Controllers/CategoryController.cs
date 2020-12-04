@@ -1,17 +1,11 @@
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
-
-/*
-@TODO -- Convert controller actions to async Tasks
-
-https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/controller-methods-views?view=aspnetcore-5.0
-*/
+using Inventorizer_DataAccess.Data;
 
 namespace Inventorizer.Controllers
 {
@@ -25,26 +19,24 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Category> categories = _database.Categories.AsNoTracking().ToList();
+            List<Category> categories =  await _database.Categories.AsNoTracking().ToListAsync();
 
             return View(categories);
         }
 
         [HttpGet]
-        public IActionResult CreateOrUpdate(int? id)
+        public async Task<IActionResult> CreateOrUpdate(int? id)
         {
-            // Return view with category to create
             if (id == null)
             {
                 return View(new Category());
             }
 
-            // Return view with category to update
-            Category categoryToEdit = _database.Categories
+            Category categoryToEdit = await _database.Categories
                 .AsNoTracking()
-                .FirstOrDefault(c => c.Category_Id == id);
+                .FirstOrDefaultAsync(c => c.Category_Id == id);
 
             if (categoryToEdit == null)
             {
@@ -56,11 +48,10 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateOrUpdate(Category category)
+        public async Task<IActionResult> CreateOrUpdate(Category category)
         {
             if (ModelState.IsValid)
             {
-                // Create
                 if (category.Category_Id == 0)
                 {
                     _database.Categories.Add(category);
@@ -70,22 +61,21 @@ namespace Inventorizer.Controllers
                     _database.Categories.Update(category);
                 }
 
-                _database.SaveChanges();
+                await _database.SaveChangesAsync();
 
-                // Redirect back to index
                 return RedirectToAction(nameof(Index));
             }
 
-            // If the model is not valid, we return the passed category object back with the view
             return View(category);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Category categoryToDelete = _database.Categories.FirstOrDefault(c => c.Category_Id == id);
+            Category categoryToDelete = await _database.Categories.FirstOrDefaultAsync(c => c.Category_Id == id);
 
             _database.Categories.Remove(categoryToDelete);
-            _database.SaveChanges();
+            
+            await _database.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
