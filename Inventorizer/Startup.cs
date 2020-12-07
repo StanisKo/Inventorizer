@@ -46,6 +46,8 @@ namespace Inventorizer
             );
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            services.AddHttpClient();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
