@@ -47,7 +47,10 @@ namespace Inventorizer
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-            services.AddHttpClient();
+            services.AddHttpClient("ebay", config =>
+            {
+                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI"));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
