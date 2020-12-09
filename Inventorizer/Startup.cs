@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http.Headers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,9 +48,11 @@ namespace Inventorizer
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-            services.AddHttpClient("ebay", config =>
+            services.AddHttpClient("EbayAPI", config =>
             {
                 config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI"));
+                config.DefaultRequestHeaders.Accept.Clear();
+                config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
         }
 
