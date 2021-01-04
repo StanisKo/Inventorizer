@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
+using Inventorizer.API;
 
 namespace Inventorizer
 {
@@ -50,10 +51,13 @@ namespace Inventorizer
 
             services.AddHttpClient("EbayAPI", config =>
             {
-                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI"));
+                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI:Base"));
                 config.DefaultRequestHeaders.Accept.Clear();
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
+
+            // Add Ebay API to injection chain to gain access to secrets via IConfiguration
+            services.AddTransient<EbayAPI>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
