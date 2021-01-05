@@ -55,7 +55,10 @@ namespace Inventorizer.API
         {
             HttpClient client = _clientFactory.CreateClient("EbayAPI");
 
-            // Encode portal-provided application keys as base64 and add to headers
+            /*
+            Encode portal-provided application keys as base64 and add to headers
+            in order to authorize authentication
+            */
             byte[] byteArray = Encoding.ASCII.GetBytes($"{_clientId}:{_clientSecret}");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
@@ -64,9 +67,10 @@ namespace Inventorizer.API
             );
 
             // Specify grant type and scope of available API
-            var requestPayload = new {
-                grant_type = "client_credentials",
-                scope = "https://api.ebay.com/oauth/api_scope"
+            List<KeyValuePair<string, string>> requestParams = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                new KeyValuePair<string, string>("scope", "https://api.ebay.com/oauth/api_scope")
             };
 
             HttpRequestMessage requestToAuth = new HttpRequestMessage(
@@ -74,20 +78,20 @@ namespace Inventorizer.API
                 _configuration["EbayAPI:Auth"]
             );
 
-            // Attach requst body and specified required by the API Content-Type header
-            requestToAuth.Content = JsonContent.Create(requestPayload, new MediaTypeHeaderValue(
+            // Encode requst params into url and specify required by the API Content-Type header
+            requestToAuth.Content = new FormUrlEncodedContent(requestParams);
+
+            requestToAuth.Content.Headers.ContentType = new MediaTypeHeaderValue(
                 "application/x-www-form-urlencoded"
-                )
             );
 
             HttpResponseMessage responseFromAuth = await client.SendAsync(requestToAuth);
 
             /*    ****    ****    */
 
-            if (!responseFromAuth.IsSuccessStatusCode)
+            if (responseFromAuth.IsSuccessStatusCode)
             {
-                Console.WriteLine(responseFromAuth.ReasonPhrase);
-                // object applicationAccessTokenResponse = responseFromAuth.Content.ReadFromJsonAsync<object>();
+                object applicationAccessTokenResponse = responseFromAuth.Content.ReadFromJsonAsync<object>();
             }
         }
     }
