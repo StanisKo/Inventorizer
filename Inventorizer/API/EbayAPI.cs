@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,20 +17,26 @@ namespace Inventorizer.API
 {
     public class EbayAPI
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
-        private IHttpClientFactory _clientFactory;
+        private readonly IHttpClientFactory _clientFactory;
 
         private string _clientId;
         private string _clientSecret;
         private string _applicationAccessToken;
 
-        public EbayAPI(IConfiguration configuration)
+        public EbayAPI(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             _configuration = configuration;
+            _clientFactory = clientFactory;
 
             _clientId = _configuration["ClientId"];
             _clientSecret = _configuration["ClientSecret"];
+        }
+
+        public async Task InitializeAPI()
+        {
+            await RetrieveApplicationAccessToken();
         }
 
         public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
@@ -41,7 +46,20 @@ namespace Inventorizer.API
 
         private async Task RetrieveApplicationAccessToken()
         {
+            // Using auth URL explicitly, since httpClient is geared towards ebay API base address
+            HttpRequestMessage requestToAuth = new HttpRequestMessage(
+                HttpMethod.Post,
+                _configuration["EbayAPI:Auth"]
+            );
 
+            HttpClient client = _clientFactory.CreateClient("EbayAPI");
+
+            HttpResponseMessage responseFromAuth = await client.SendAsync(requestToAuth);
+
+            if (responseFromAuth.IsSuccessStatusCode)
+            {
+
+            }
         }
     }
 }
