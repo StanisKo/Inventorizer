@@ -1,5 +1,7 @@
+using System;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 
@@ -16,30 +18,28 @@ namespace Inventorizer.API
 {
     public class EbayAPI
     {
-        private string _applicationAccessToken;
+        private IConfiguration _configuration;
 
         private IHttpClientFactory _clientFactory;
 
-        private IConfiguration _configuration;
+        private string _clientId;
+        private string _clientSecret;
+        private string _applicationAccessToken;
 
         public EbayAPI(IConfiguration configuration)
         {
             _configuration = configuration;
 
-            string clientId = _configuration["ClientId"];
-            string clientSecret = _configuration["ClientSecret"];
-
-            /*
-            Retrieve access token
-            */
+            _clientId = _configuration["ClientId"];
+            _clientSecret = _configuration["ClientSecret"];
         }
 
-        public List<double> RetrieveItemPrices()
+        public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
         {
             return new List<double>();
         }
 
-        private void RetrieveApplicationAccessToken()
+        private async Task RetrieveApplicationAccessToken()
         {
 
         }
