@@ -20,7 +20,11 @@ namespace Inventorizer.API
         private string _clientId;
         private string _clientSecret;
 
-        private ParsedAuth _ParsedAuth;
+        private ParsedAuth _parsedAuth;
+
+        private bool _applicationTokenIsActive;
+
+        public string ErrorString { get; private set; }
 
         public EbayAPI(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
@@ -34,6 +38,11 @@ namespace Inventorizer.API
         public async Task InitializeAPI()
         {
             await RetrieveApplicationAccessToken();
+
+            // Remint the token after it has expired and avoid auth request while it is active
+            await new Task(() => {
+
+            });
         }
 
         public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
@@ -79,11 +88,13 @@ namespace Inventorizer.API
 
             if (responseFromAuth.IsSuccessStatusCode)
             {
-                _ParsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
+                _parsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
+
+                ErrorString = null;
             }
             else
             {
-                _ParsedAuth.errorString =
+                ErrorString =
                     $"Failed to retrieve token. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}";
             }
         }
