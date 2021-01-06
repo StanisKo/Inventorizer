@@ -9,17 +9,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 
-/*
-@TODO:
-
-1. Add ebay's auth and access urls to appsettings
-2. Add client_id and client_secret to userSecrets
-3. Retrieve OAuth token from auth url
-4. Test by retrieving simple list
-
-5. Move api to separate class library, add as singletone and initialize on acessing home
-*/
-
 namespace Inventorizer.API
 {
     public class EbayAPI
@@ -30,7 +19,12 @@ namespace Inventorizer.API
 
         private string _clientId;
         private string _clientSecret;
-        private string _applicationAccessToken;
+
+        private struct _parsedAuth
+        {
+            public string access_token { get; set; }
+            public int expires_in { get; set; }
+        }
 
         public EbayAPI(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
@@ -56,8 +50,8 @@ namespace Inventorizer.API
             HttpClient client = _clientFactory.CreateClient("EbayAPI");
 
             /*
-            Encode portal-provided application keys as base64 and add to headers
-            in order to authorize authentication
+            Encode portal-provided application keys as base64 string and add to headers
+            in order to access application token from OAuth
             */
             byte[] byteArray = Encoding.ASCII.GetBytes($"{_clientId}:{_clientSecret}");
 
@@ -67,10 +61,10 @@ namespace Inventorizer.API
             );
 
             // Specify grant type and scope of available API
-            List<KeyValuePair<string, string>> requestParams = new List<KeyValuePair<string, string>>()
+            var requestParams = new List<KeyValuePair<string, string>>()
             {
-                new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("scope", "https://api.ebay.com/oauth/api_scope")
+                new KeyValuePair<string, string>("grant_type", _configuration["EbayAPI:GrantType"]),
+                new KeyValuePair<string, string>("scope", _configuration["EbayAPI:Scope"])
             };
 
             HttpRequestMessage requestToAuth = new HttpRequestMessage(
@@ -87,11 +81,9 @@ namespace Inventorizer.API
 
             HttpResponseMessage responseFromAuth = await client.SendAsync(requestToAuth);
 
-            /*    ****    ****    */
-
             if (responseFromAuth.IsSuccessStatusCode)
             {
-                object applicationAccessTokenResponse = responseFromAuth.Content.ReadFromJsonAsync<object>();
+                _parsedAuth _parsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<_parsedAuth>();
             }
         }
     }
