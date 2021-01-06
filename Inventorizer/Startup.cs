@@ -56,8 +56,8 @@ namespace Inventorizer
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            // Add Ebay API to injection chain
-            services.AddTransient<EbayAPI>();
+            // Add Ebay API to DI chain
+            services.AddSingleton<EbayAPI>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
