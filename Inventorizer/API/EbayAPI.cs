@@ -20,11 +20,7 @@ namespace Inventorizer.API
         private string _clientId;
         private string _clientSecret;
 
-        private struct _parsedAuth
-        {
-            public string access_token { get; set; }
-            public int expires_in { get; set; }
-        }
+        private ParsedAuth _ParsedAuth;
 
         public EbayAPI(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
@@ -83,7 +79,12 @@ namespace Inventorizer.API
 
             if (responseFromAuth.IsSuccessStatusCode)
             {
-                _parsedAuth _parsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<_parsedAuth>();
+                _ParsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
+            }
+            else
+            {
+                _ParsedAuth.errorString =
+                    $"Failed to retrieve token. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}";
             }
         }
     }

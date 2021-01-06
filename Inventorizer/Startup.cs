@@ -56,7 +56,7 @@ namespace Inventorizer
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            // Add Ebay API to injection chain to gain access to secrets via IConfiguration
+            // Add Ebay API to injection chain
             services.AddTransient<EbayAPI>();
         }
 
