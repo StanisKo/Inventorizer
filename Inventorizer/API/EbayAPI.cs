@@ -39,10 +39,10 @@ namespace Inventorizer.API
         {
             await RetrieveApplicationAccessToken();
 
-            // Remint the token after it has expired and avoid auth request while it is active
-            await new Task(() => {
+            // // Remint the token after it has expired and avoid auth request while it is active
+            // await new Task(() => {
 
-            });
+            // });
         }
 
         public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
