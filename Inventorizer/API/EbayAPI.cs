@@ -53,30 +53,19 @@ namespace Inventorizer.API
             After the token is retrieved the second timer will launch but already with the interval
             value provided by API
             */
-            if (ErrorString == null)
-            {
-                Timer _authRequestTimer = new Timer(RetrieveApplicationAccessToken, null, 0, 0);
+            _authRequestTimer = new Timer(RetrieveApplicationAccessToken, null, 0, 0);
 
-                // Change interval only if token was retrieved (so only once -- on 200 OK from first request)
-                if (!String.IsNullOrEmpty(_parsedAuth.access_token))
-                {
-                    int intervalFromAPI = (int)TimeSpan.FromSeconds(_parsedAuth.expires_in).TotalMilliseconds;
+            int intervalFromAPI = (int)TimeSpan.FromSeconds(_parsedAuth.expires_in).TotalMilliseconds;
 
-                    _authRequestTimer?.Change(0, intervalFromAPI);
-                }
-            }
-            else
-            {
-                _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-            }
+            _authRequestTimer?.Change(0, intervalFromAPI);
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            // Change the start time to infinite, therefore killing the timer
-            _authRequestTimer?.Change(Timeout.Infinite, 0);
+            // Change the start time and interval to infinite, therefore killing the timer
+            _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 
             return Task.CompletedTask;
         }
@@ -134,6 +123,8 @@ namespace Inventorizer.API
                 }
                 else
                 {
+                    _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+
                     ErrorString =
                         $"Auth failed. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}";
                 }
