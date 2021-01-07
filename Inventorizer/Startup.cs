@@ -56,7 +56,17 @@ namespace Inventorizer
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            // Add Ebay API to DI chain
+            /*
+            Add Ebay API to DI chain
+
+            TODO: extract authentication service from main API into separate class:
+
+            EbayAPIAuthService
+
+            EbayAPIProvider
+            */
+            services.AddHostedService<EbayAPI>();
+
             services.AddSingleton<EbayAPI>();
         }
 

@@ -1,11 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Inventorizer_Models.ViewModels;
-using Inventorizer.API;
 
 namespace Inventorizer.Controllers
 {
@@ -13,17 +11,13 @@ namespace Inventorizer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly EbayAPI _ebayAPI;
-
-        public HomeController(ILogger<HomeController> logger, EbayAPI ebayAPI)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _ebayAPI = ebayAPI;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            await _ebayAPI.InitializeAPI();
 
             return View();
         }
