@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using Inventorizer.API.Auth;
 
 namespace Inventorizer.API
 {
@@ -16,17 +19,21 @@ namespace Inventorizer.API
 
         private readonly IHttpClientFactory _clientFactory;
 
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly EbayAPIAuthService _ebayAPIAuthService;
+
         public string ErrorString { get; private set; }
 
-        public EbayAPIProvider(IConfiguration configuration, IHttpClientFactory clientFactory)
+        public EbayAPIProvider(IConfiguration configuration, IHttpClientFactory clientFactory, IServiceProvider serviceProvider)
         {
             _configuration = configuration;
             _clientFactory = clientFactory;
+            _serviceProvider = serviceProvider;
+
+            _ebayAPIAuthService = _serviceProvider.GetService<EbayAPIAuthService>();
         }
 
-        // public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
-        // {
-        //     return new List<double>();
-        // }
+        public void Test() => Console.WriteLine(_ebayAPIAuthService?.ParsedAuth.access_token ?? "service is null");
     }
 }

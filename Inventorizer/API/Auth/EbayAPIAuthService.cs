@@ -27,7 +27,7 @@ namespace Inventorizer.API.Auth
 
         private Timer _authRequestTimer;
 
-        private ParsedAuth _parsedAuth;
+        public ParsedAuth ParsedAuth { get; private set; }
 
         public string ErrorString { get; private set; }
 
@@ -52,7 +52,7 @@ namespace Inventorizer.API.Auth
             */
             _authRequestTimer = new Timer(RetrieveApplicationAccessToken, null, 0, 0);
 
-            int intervalFromAPI = (int)TimeSpan.FromSeconds(_parsedAuth.expires_in).TotalMilliseconds;
+            int intervalFromAPI = (int)TimeSpan.FromSeconds(ParsedAuth.expires_in).TotalMilliseconds;
 
             _authRequestTimer?.Change(0, intervalFromAPI);
 
@@ -109,7 +109,7 @@ namespace Inventorizer.API.Auth
 
                 if (responseFromAuth.IsSuccessStatusCode)
                 {
-                    _parsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
+                    ParsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
 
                     ErrorString = null;
                 }

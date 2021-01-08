@@ -35,6 +35,8 @@ namespace Inventorizer.Controllers
                 .Include(i => i.ItemDetail)
                 .ToListAsync();
 
+            _ebayAPIProvider.Test();
+
             return View(items);
         }
 
