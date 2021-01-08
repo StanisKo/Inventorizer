@@ -17,8 +17,6 @@ namespace Inventorizer.API
 
         private readonly IHttpClientFactory _clientFactory;
 
-        private readonly IServiceProvider _serviceProvider;
-
         private readonly EbayAPIAuthService _ebayAPIAuthService;
 
         public string ErrorString { get; private set; }
