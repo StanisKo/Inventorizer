@@ -1,4 +1,4 @@
-namespace Inventorizer.API
+namespace Inventorizer.API.Auth
 {
     public struct ParsedAuth
     {

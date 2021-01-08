@@ -18,12 +18,12 @@ namespace Inventorizer.Controllers
     {
         private readonly ApplicationDbContext _database;
 
-        private readonly EbayAPI _ebayAPI;
+        private readonly EbayAPIProvider _ebayAPIProvider;
 
-        public ItemController(ApplicationDbContext db, EbayAPI ebayAPI)
+        public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
         {
             _database = db;
-            _ebayAPI = ebayAPI;
+            _ebayAPIProvider = ebayAPIProvider;
         }
 
         [HttpGet]

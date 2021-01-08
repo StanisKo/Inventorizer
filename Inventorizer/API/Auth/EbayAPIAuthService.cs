@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace Inventorizer.API
+namespace Inventorizer.API.Auth
 {
-    public class EbayAPI : IHostedService
+    public class EbayAPIAuthService : IHostedService
     {
         private readonly IConfiguration _configuration;
 
@@ -31,7 +31,7 @@ namespace Inventorizer.API
 
         public string ErrorString { get; private set; }
 
-        public EbayAPI(IConfiguration configuration, IHttpClientFactory clientFactory)
+        public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             _configuration = configuration;
             _clientFactory = clientFactory;
@@ -42,16 +42,13 @@ namespace Inventorizer.API
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // Cancellation token workflow here
-
             /*
             Token expiration interval is provided by authentication service (7200 seconds)
 
             Since there is no token in scope on startup, we launch job with 0 seconds interval
-            and lock request in one thread until it's finished (see callback)
+            and lock request until it's finished (see callback)
 
-            After the token is retrieved the second timer will launch but already with the interval
-            value provided by API
+            After the token is retrieved we change the interval to value provided by API
             */
             _authRequestTimer = new Timer(RetrieveApplicationAccessToken, null, 0, 0);
 
@@ -68,11 +65,6 @@ namespace Inventorizer.API
             _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 
             return Task.CompletedTask;
-        }
-
-        public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
-        {
-            return new List<double>();
         }
 
         private async void RetrieveApplicationAccessToken(object state)

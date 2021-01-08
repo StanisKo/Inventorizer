@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
+using Inventorizer.API.Auth;
 using Inventorizer.API;
 
 namespace Inventorizer
@@ -56,18 +57,9 @@ namespace Inventorizer
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            /*
-            Add Ebay API to DI chain
+            services.AddHostedService<EbayAPIAuthService>();
 
-            TODO: extract authentication service from main API into separate class:
-
-            EbayAPIAuthService
-
-            EbayAPIProvider
-            */
-            services.AddHostedService<EbayAPI>();
-
-            services.AddSingleton<EbayAPI>();
+            services.AddSingleton<EbayAPIProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
