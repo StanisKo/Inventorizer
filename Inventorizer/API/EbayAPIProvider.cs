@@ -1,10 +1,12 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
 
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -17,6 +19,8 @@ namespace Inventorizer.API
         private readonly IConfiguration _configuration;
 
         private readonly IHttpClientFactory _clientFactory;
+
+        private readonly ILogger<EbayAPIProvider> _logger;
 
         private readonly EbayAPIAuthService _ebayAPIAuthService;
 
@@ -35,19 +39,59 @@ namespace Inventorizer.API
 
         public string ErrorString { get; private set; }
 
-        public EbayAPIProvider(IConfiguration configuration, IHttpClientFactory clientFactory, EbayAPIAuthService ebayAPIAuthService)
+        public EbayAPIProvider(IConfiguration configuration,
+                               IHttpClientFactory clientFactory,
+                               ILogger<EbayAPIProvider> logger,
+                               EbayAPIAuthService ebayAPIAuthService)
         {
             _configuration = configuration;
             _clientFactory = clientFactory;
+            _logger = logger;
 
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
-        public void Test()
+        /*
+        First iteration of provider, things will probably change (due to optimization)
+        */
+        public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
         {
-            string requestURL = QueryHelpers.AddQueryString(_configuration["EbayAPI:Base"], _baseRequestParams);
+            HttpClient client = _clientFactory.CreateClient("EbayAPI");
 
-            Console.WriteLine(requestURL);
+            // Authenticate call with application access token
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                _ebayAPIAuthService.ParsedAuth.access_token
+            );
+
+            Console.WriteLine(client.DefaultRequestHeaders.Authorization);
+
+            string requestURL = QueryHelpers.AddQueryString(client.BaseAddress.ToString(), _baseRequestParams);
+
+            requestURL = QueryHelpers.AddQueryString(requestURL, new Dictionary<string, string>()
+            {
+                { "q", "test" }
+            });
+
+            HttpRequestMessage requestToAPI = new HttpRequestMessage(
+                HttpMethod.Get,
+                requestURL
+            );
+
+            HttpResponseMessage responseFromAPI = await client.SendAsync(requestToAPI);
+
+            if (responseFromAPI.IsSuccessStatusCode)
+            {
+                object parsedResponse = await responseFromAPI.Content.ReadFromJsonAsync<ParsedAuth>();
+            }
+            else
+            {
+                _logger.LogError(
+                    $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}"
+                );
+            }
+
+            return new List<double>();
         }
     }
 }
