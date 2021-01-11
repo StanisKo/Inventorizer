@@ -64,13 +64,12 @@ namespace Inventorizer.API
                 _ebayAPIAuthService.ParsedAuth.access_token
             );
 
-            Console.WriteLine(client.DefaultRequestHeaders.Authorization);
-
+            // Encoding of params is wrong, but API access works -- research docs
             string requestURL = QueryHelpers.AddQueryString(client.BaseAddress.ToString(), _baseRequestParams);
 
-            requestURL = QueryHelpers.AddQueryString(requestURL, new Dictionary<string, string>()
+            string equestURL = QueryHelpers.AddQueryString(requestURL, new Dictionary<string, string>()
             {
-                { "q", "test" }
+                { "q", "drone" }
             });
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(

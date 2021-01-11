@@ -46,7 +46,6 @@ namespace Inventorizer
             services.AddHttpClient("EbayAPI", config =>
             {
                 config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI:Base"));
-
                 config.DefaultRequestHeaders.Accept.Clear();
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
