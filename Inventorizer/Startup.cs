@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http.Headers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
+using Inventorizer.API.Auth;
+using Inventorizer.API;
 
 namespace Inventorizer
 {
@@ -24,13 +27,6 @@ namespace Inventorizer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-            We could've stored connection string in appsettings.json,
-            but to avoid having db credentials in the version control
-            we store them in dotnet user-secrets package:
-
-            https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-5.0&tabs=linux
-            */
             NpgsqlConnectionStringBuilder connectionStringBuilder = new NpgsqlConnectionStringBuilder()
             {
                 Host = Configuration["Host"],
@@ -46,6 +42,22 @@ namespace Inventorizer
             );
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            services.AddHttpClient("EbayAPI", config =>
+            {
+                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI:Base"));
+                config.DefaultRequestHeaders.Accept.Clear();
+                config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+
+            /*
+            Registering auth service not through AddHostedService, but as singletone
+            to make sure API provider can access auth token from the auth service via DI
+            */
+            services.AddSingleton<EbayAPIAuthService>();
+            services.AddSingleton<IHostedService>(sp => sp.GetService<EbayAPIAuthService>());
+
+            services.AddSingleton<EbayAPIProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

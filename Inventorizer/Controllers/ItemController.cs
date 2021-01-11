@@ -10,15 +10,20 @@ using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
+using Inventorizer.API;
+
 namespace Inventorizer.Controllers
 {
     public class ItemController : Controller
     {
         private readonly ApplicationDbContext _database;
 
-        public ItemController(ApplicationDbContext db)
+        private readonly EbayAPIProvider _ebayAPIProvider;
+
+        public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
         {
             _database = db;
+            _ebayAPIProvider = ebayAPIProvider;
         }
 
         [HttpGet]
