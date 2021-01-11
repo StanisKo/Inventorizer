@@ -18,6 +18,7 @@ namespace Inventorizer.Controllers
 
         public IActionResult Index()
         {
+
             return View();
         }
 
