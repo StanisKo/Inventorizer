@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
 namespace Inventorizer.API.Auth
@@ -18,6 +19,8 @@ namespace Inventorizer.API.Auth
         private readonly IConfiguration _configuration;
 
         private readonly IHttpClientFactory _clientFactory;
+
+        private readonly ILogger<EbayAPIAuthService> _logger;
 
         private string _clientId;
         private string _clientSecret;
@@ -31,10 +34,12 @@ namespace Inventorizer.API.Auth
 
         public string ErrorString { get; private set; }
 
-        public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory)
+        public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<EbayAPIAuthService> logger)
         {
             _configuration = configuration;
             _clientFactory = clientFactory;
+
+            _logger = logger;
 
             _clientId = _configuration["ClientId"];
             _clientSecret = _configuration["ClientSecret"];
@@ -42,6 +47,13 @@ namespace Inventorizer.API.Auth
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogError("Cancellation request is received before authentication job started");
+
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
             /*
             Token expiration interval is provided by authentication service (7200 seconds)
 
@@ -61,6 +73,13 @@ namespace Inventorizer.API.Auth
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogError("Cancellation request is received before authentication job stopped");
+
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
             // Change the start time and interval to infinite, therefore killing the timer
             _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 
