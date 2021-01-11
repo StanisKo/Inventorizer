@@ -25,14 +25,12 @@ namespace Inventorizer.API.Auth
         private string _clientId;
         private string _clientSecret;
 
-        private const int _MAX_AUTH_REQUESTS = 1;
         private int _numberOfAuthRequests = 0;
+        private const int _MAX_AUTH_REQUESTS = 1;
 
         private Timer _authRequestTimer;
 
         public ParsedAuth ParsedAuth { get; private set; }
-
-        public string ErrorString { get; private set; }
 
         public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<EbayAPIAuthService> logger)
         {
@@ -130,14 +128,15 @@ namespace Inventorizer.API.Auth
                 {
                     ParsedAuth = await responseFromAuth.Content.ReadFromJsonAsync<ParsedAuth>();
 
-                    ErrorString = null;
+                    _logger.LogInformation("Application access token retrieved successfully");
                 }
                 else
                 {
                     _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 
-                    ErrorString =
-                        $"Auth failed. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}";
+                    _logger.LogError(
+                        $"Auth failed. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}"
+                    );
                 }
 
                 Interlocked.Decrement(ref _numberOfAuthRequests);
