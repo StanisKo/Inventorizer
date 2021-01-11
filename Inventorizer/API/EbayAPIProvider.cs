@@ -19,6 +19,19 @@ namespace Inventorizer.API
 
         private readonly EbayAPIAuthService _ebayAPIAuthService;
 
+        /*
+        Unchanging request parameters that are applied to all items
+        Since API expects strings for all params, we're using strings for numerical values
+        */
+        private readonly Dictionary<string, string> _baseRequestParams = new Dictionary<string, string>
+        {
+            { "itemLocationCountry", "NL" },
+            { "priceCurrency", "EUR" },
+            { "conditions", "USED" },
+            { "offset", "0" },
+            { "limit", "10" }
+        };
+
         public string ErrorString { get; private set; }
 
         public EbayAPIProvider(IConfiguration configuration, IHttpClientFactory clientFactory, EbayAPIAuthService ebayAPIAuthService)
@@ -27,6 +40,14 @@ namespace Inventorizer.API
             _clientFactory = clientFactory;
 
             _ebayAPIAuthService = ebayAPIAuthService;
+        }
+
+        public void Test()
+        {
+            foreach (KeyValuePair<string, string> param in _baseRequestParams)
+            {
+                Console.WriteLine($"{param.Key}: {param.Value}");
+            }
         }
     }
 }
