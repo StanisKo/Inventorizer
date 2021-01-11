@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.WebUtilities;
 
 using Inventorizer.API.Auth;
 
@@ -44,10 +45,9 @@ namespace Inventorizer.API
 
         public void Test()
         {
-            foreach (KeyValuePair<string, string> param in _baseRequestParams)
-            {
-                Console.WriteLine($"{param.Key}: {param.Value}");
-            }
+            string requestURL = QueryHelpers.AddQueryString(_configuration["EbayAPI:Base"], _baseRequestParams);
+
+            Console.WriteLine(requestURL);
         }
     }
 }
