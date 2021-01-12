@@ -12,6 +12,13 @@ using Microsoft.AspNetCore.WebUtilities;
 
 using Inventorizer.API.Auth;
 
+/*
+TODO:
+
+1. Figure out proper encoding
+2. Request items concurrently (as Task -- look into TPL)
+*/
+
 namespace Inventorizer.API
 {
     public class EbayAPIProvider
@@ -51,9 +58,6 @@ namespace Inventorizer.API
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
-        /*
-        First iteration of provider, things will probably change (due to optimization)
-        */
         public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
         {
             HttpClient client = _clientFactory.CreateClient("EbayAPI");
@@ -64,12 +68,12 @@ namespace Inventorizer.API
                 _ebayAPIAuthService.ParsedAuth.access_token
             );
 
-            // Encoding of params is wrong, but API access works -- research docs
-            string requestURL = QueryHelpers.AddQueryString(client.BaseAddress.ToString(), _baseRequestParams);
-
-            string equestURL = QueryHelpers.AddQueryString(requestURL, new Dictionary<string, string>()
+            string requestURL = QueryHelpers.AddQueryString(
+                client.BaseAddress.ToString(),
+                new Dictionary<string, string>()
             {
-                { "q", "drone" }
+                { "q", "puma,suede" },
+                {"limit", "10"}
             });
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(
@@ -81,7 +85,12 @@ namespace Inventorizer.API
 
             if (responseFromAPI.IsSuccessStatusCode)
             {
-                object parsedResponse = await responseFromAPI.Content.ReadFromJsonAsync<ParsedAuth>();
+                object parsedResponse = await responseFromAPI.Content.ReadFromJsonAsync<object>();
+
+                foreach (var header in responseFromAPI.Content.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {String.Join(',', header.Value)}");
+                }
             }
             else
             {
