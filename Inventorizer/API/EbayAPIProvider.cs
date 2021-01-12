@@ -16,7 +16,8 @@ using Inventorizer.API.Auth;
 TODO:
 
 1. Figure out proper encoding
-2. Request items concurrently (as Task -- look into TPL)
+2. Fifure out response shape
+3. Request items concurrently (as Task -- look into TPL)
 */
 
 namespace Inventorizer.API
@@ -72,7 +73,7 @@ namespace Inventorizer.API
                 client.BaseAddress.ToString(),
                 new Dictionary<string, string>()
             {
-                { "q", "puma,suede" },
+                { "q", "drone" },
                 {"limit", "10"}
             });
 
@@ -87,10 +88,9 @@ namespace Inventorizer.API
             {
                 object parsedResponse = await responseFromAPI.Content.ReadFromJsonAsync<object>();
 
-                foreach (var header in responseFromAPI.Content.Headers)
-                {
-                    Console.WriteLine($"{header.Key}: {String.Join(',', header.Value)}");
-                }
+                string ds = parsedResponse.ToString();
+
+                Console.WriteLine(parsedResponse);
             }
             else
             {
