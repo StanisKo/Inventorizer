@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
 
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -16,8 +17,7 @@ using Inventorizer.API.Auth;
 TODO:
 
 1. Figure out proper encoding
-2. Fifure out response shape
-3. Request items concurrently (as Task -- look into TPL)
+2. Request items concurrently (as Task -- look into TPL)
 */
 
 namespace Inventorizer.API
@@ -61,6 +61,8 @@ namespace Inventorizer.API
 
         public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
         {
+            List<double> prices = new List<double>();
+
             HttpClient client = _clientFactory.CreateClient("EbayAPI");
 
             // Authenticate call with application access token
@@ -86,12 +88,12 @@ namespace Inventorizer.API
 
             if (responseFromAPI.IsSuccessStatusCode)
             {
-                ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content.ReadFromJsonAsync<ParsedAPIResponse>();
+                ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
+                    .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                foreach (ItemSummary itemSummary in parsedAPIResponse.ItemSummaries)
-                {
-                    Console.WriteLine(itemSummary.Price.Value);
-                }
+                prices = parsedAPIResponse.ItemSummaries
+                    .Select(s => Convert.ToDouble(s.Price.Value))
+                    .ToList();
             }
             else
             {
@@ -100,7 +102,7 @@ namespace Inventorizer.API
                 );
             }
 
-            return new List<double>();
+            return prices;
         }
     }
 }
