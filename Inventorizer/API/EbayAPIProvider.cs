@@ -86,7 +86,7 @@ namespace Inventorizer.API
 
                 For instance, ?q=running,shoes will retrieve items that mention running and shoes
                 */
-                { "q", String.Join(',', "Puma Suede".Split(' ').Select(w => w.ToLower())) },
+                { "q", String.Join(',', itemNames.First().Split(' ').Select(w => w.ToLower())) },
             });
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(
