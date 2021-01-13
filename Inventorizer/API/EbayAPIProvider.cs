@@ -38,10 +38,11 @@ namespace Inventorizer.API
         */
         private readonly Dictionary<string, string> _baseRequestParams = new Dictionary<string, string>
         {
-            { "itemLocationCountry", "NL" },
-            { "priceCurrency", "EUR" },
-            { "conditions", "USED" },
-            { "offset", "0" },
+            /*
+            To avoid unnecessary string operations, we do hardcode the filters in the format of:
+            ?format=<param_1>:<value>,<param_N>:<value>
+            */
+            { "filter", "itemLocationCountry:DE,priceCurrency:EUR,conditions:USED" },
             { "limit", "10" }
         };
 
@@ -73,10 +74,19 @@ namespace Inventorizer.API
 
             string requestURL = QueryHelpers.AddQueryString(
                 client.BaseAddress.ToString(),
-                new Dictionary<string, string>()
+                new Dictionary<string, string>(_baseRequestParams)
             {
-                { "q", "drone" },
-                {"limit", "10"}
+                /*
+                Add baseParams with itemNames from the controller
+
+                Q param from API is used for keyword search
+
+                Different denominators apply different logic to provided keyword
+                Comma results in AND logic
+
+                For instance, ?q=running,shoes will retrieve items that mention running and shoes
+                */
+                { "q", String.Join(',', "Puma Suede".Split(' ').Select(w => w.ToLower())) },
             });
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(
@@ -94,6 +104,11 @@ namespace Inventorizer.API
                 prices = parsedAPIResponse.ItemSummaries
                     .Select(s => Convert.ToDouble(s.Price.Value))
                     .ToList();
+
+                foreach (double price in prices)
+                {
+                    Console.WriteLine(price);
+                }
             }
             else
             {
