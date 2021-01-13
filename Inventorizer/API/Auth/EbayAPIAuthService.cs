@@ -12,16 +12,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
+using Inventorizer.API;
+
 namespace Inventorizer.API.Auth
 {
-    public class EbayAPIAuthService : IHostedService
+    public class EbayAPIAuthService : BaseAPI<EbayAPIAuthService>, IHostedService
     {
-        private readonly IConfiguration _configuration;
-
-        private readonly IHttpClientFactory _clientFactory;
-
-        private readonly ILogger<EbayAPIAuthService> _logger;
-
         private string _clientId;
         private string _clientSecret;
 
@@ -33,12 +29,8 @@ namespace Inventorizer.API.Auth
         public ParsedAuth ParsedAuth { get; private set; }
 
         public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<EbayAPIAuthService> logger)
+            : base(configuration, clientFactory, logger)
         {
-            _configuration = configuration;
-            _clientFactory = clientFactory;
-
-            _logger = logger;
-
             _clientId = _configuration["ClientId"];
             _clientSecret = _configuration["ClientSecret"];
         }

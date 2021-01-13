@@ -18,18 +18,13 @@ TODO:
 
 1. Figure out proper encoding
 2. Request items concurrently (as Task -- look into TPL)
+3. Better structure api dir
 */
 
 namespace Inventorizer.API
 {
-    public class EbayAPIProvider
+    public class EbayAPIProvider : BaseAPI<EbayAPIProvider>
     {
-        private readonly IConfiguration _configuration;
-
-        private readonly IHttpClientFactory _clientFactory;
-
-        private readonly ILogger<EbayAPIProvider> _logger;
-
         private readonly EbayAPIAuthService _ebayAPIAuthService;
 
         /*
@@ -42,7 +37,7 @@ namespace Inventorizer.API
             To avoid unnecessary string operations, we do hardcode the filters in the format of:
             ?format=<param_1>:<value>,<param_N>:<value>
             */
-            { "filter", "itemLocationCountry:DE,priceCurrency:EUR,conditions:USED" },
+            { "filter", "itemLocationCountry:DE,conditions:{USED}" },
             { "limit", "10" }
         };
 
@@ -51,12 +46,8 @@ namespace Inventorizer.API
         public EbayAPIProvider(IConfiguration configuration,
                                IHttpClientFactory clientFactory,
                                ILogger<EbayAPIProvider> logger,
-                               EbayAPIAuthService ebayAPIAuthService)
+                               EbayAPIAuthService ebayAPIAuthService) : base(configuration, clientFactory, logger)
         {
-            _configuration = configuration;
-            _clientFactory = clientFactory;
-            _logger = logger;
-
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
