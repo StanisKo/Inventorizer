@@ -86,11 +86,12 @@ namespace Inventorizer.API
 
             if (responseFromAPI.IsSuccessStatusCode)
             {
-                object parsedResponse = await responseFromAPI.Content.ReadFromJsonAsync<object>();
+                ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content.ReadFromJsonAsync<ParsedAPIResponse>();
 
-                string ds = parsedResponse.ToString();
-
-                Console.WriteLine(parsedResponse);
+                foreach (ItemSummary itemSummary in parsedAPIResponse.ItemSummaries)
+                {
+                    Console.WriteLine(itemSummary.Price.Value);
+                }
             }
             else
             {
