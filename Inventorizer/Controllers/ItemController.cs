@@ -10,7 +10,7 @@ using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
-using Inventorizer.API;
+using Inventorizer.API.Provider;
 
 namespace Inventorizer.Controllers
 {

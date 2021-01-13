@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.WebUtilities;
 
+using Inventorizer.API.Base;
 using Inventorizer.API.Auth;
 
 /*
@@ -21,7 +22,7 @@ TODO:
 3. Better structure api dir
 */
 
-namespace Inventorizer.API
+namespace Inventorizer.API.Provider
 {
     public class EbayAPIProvider : BaseAPI<EbayAPIProvider>
     {

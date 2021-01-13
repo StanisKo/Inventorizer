@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Inventorizer.API
+namespace Inventorizer.API.Provider
 {
     // We only need prices ...
     public struct ParsedAPIResponse

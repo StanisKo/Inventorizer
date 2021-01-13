@@ -3,7 +3,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
-namespace Inventorizer.API
+namespace Inventorizer.API.Base
 {
     public abstract class BaseAPI<T>
     {

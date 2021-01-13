@@ -11,8 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
+
 using Inventorizer.API.Auth;
-using Inventorizer.API;
+using Inventorizer.API.Provider;
 
 namespace Inventorizer
 {

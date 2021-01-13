@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
-using Inventorizer.API;
+using Inventorizer.API.Base;
 
 namespace Inventorizer.API.Auth
 {
