@@ -12,17 +12,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.WebUtilities;
 
 using Inventorizer.API.Base;
-using Inventorizer.API.Auth;
+using Inventorizer.API.Ebay.Auth;
 
 /*
 TODO:
 
-1. Figure out proper encoding
-2. Request items concurrently (as Task -- look into TPL)
-3. Better structure api dir
+1. Request items concurrently (as Task -- look into TPL)
+
+NOTE:
+
+Stat service will have to translate USD to EUR since all prices are in USD
 */
 
-namespace Inventorizer.API.Provider
+namespace Inventorizer.API.Ebay.Provider
 {
     public class EbayAPIProvider : BaseAPI<EbayAPIProvider>
     {

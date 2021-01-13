@@ -12,8 +12,8 @@ using Npgsql;
 
 using Inventorizer_DataAccess.Data;
 
-using Inventorizer.API.Auth;
-using Inventorizer.API.Provider;
+using Inventorizer.API.Ebay.Auth;
+using Inventorizer.API.Ebay.Provider;
 
 namespace Inventorizer
 {

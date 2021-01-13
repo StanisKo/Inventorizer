@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 using Inventorizer.API.Base;
 
-namespace Inventorizer.API.Auth
+namespace Inventorizer.API.Ebay.Auth
 {
     public class EbayAPIAuthService : BaseAPI<EbayAPIAuthService>, IHostedService
     {
