@@ -17,13 +17,11 @@ using Inventorizer.API.Ebay.Auth;
 /*
 TODO:
 
-1. Request items concurrently (as Task -- look into TPL)
+1. Request in batches to speed things up
 
-2. Request in batches to speed things up
+2. Implement pagination
 
-3. Implement pagination
-
-4. !use IQuerable/IEnumerable = -- read from post tutorials! Since iterating over it is much faster than iterating over list
+3. !use IQuerable/IEnumerable = -- read from post tutorials! Since iterating over it is much faster than iterating over list
 (
     this is also connected to pagination,
     since IQuerable puts the work on the database,
@@ -31,6 +29,10 @@ TODO:
 
     Therefore, if you need to sort or filter the collection, or limit it, use IQueyrable
 )
+
+4. Work on ForExService
+
+5. Stats Service
 
 NOTE:
 
@@ -93,9 +95,7 @@ namespace Inventorizer.API.Ebay.Provider
                 new Dictionary<string, string>(_baseRequestParams)
             {
                 /*
-                Add baseParams with itemNames from the controller
-
-                Q param from API is used for keyword search
+                "q" param from API is used for keyword search
 
                 Different denominators apply different logic to provided keyword
                 Comma results in AND logic
