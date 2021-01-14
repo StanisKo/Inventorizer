@@ -56,7 +56,7 @@ namespace Inventorizer.API.Ebay.Auth
 
             int intervalFromAPI = (int)TimeSpan.FromSeconds(ParsedAuth.expires_in).TotalMilliseconds;
 
-            _authRequestTimer?.Change(0, intervalFromAPI);
+            _authRequestTimer.Change(0, intervalFromAPI);
 
             return Task.CompletedTask;
         }
@@ -124,7 +124,7 @@ namespace Inventorizer.API.Ebay.Auth
                 }
                 else
                 {
-                    _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                    _authRequestTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                     _logger.LogError(
                         $"Auth failed. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}"

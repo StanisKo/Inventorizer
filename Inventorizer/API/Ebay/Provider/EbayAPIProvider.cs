@@ -44,6 +44,13 @@ namespace Inventorizer.API.Ebay.Provider
             { "limit", "10" }
         };
 
+        private struct _itemNameAndItsPrices
+        {
+            public string ItemName { get; set; }
+
+            public List<double> ItemPrices { get; set; }
+        }
+
         public string ErrorString { get; private set; }
 
         public EbayAPIProvider(IConfiguration configuration,
@@ -54,11 +61,23 @@ namespace Inventorizer.API.Ebay.Provider
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
-        public async Task<List<double>> RetrieveItemPrices(List<string> itemNames)
+        // https://www.michalbialecki.com/2018/04/19/how-to-send-many-requests-in-parallel-in-asp-net-core/!
+        public async Task<List<_itemNameAndItsPrices>> RetrieveItemPrices(List<string> itemNames)
+        {
+            HttpClient client =_clientFactory.CreateClient("EbayAPI");
+
+            IEnumerable<Task> requestsToAPI = itemNames.Select(
+                itemName => RetrievePricesForSingeItem(itemName, client)
+            );
+
+            List<_itemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
+
+            return itemPrices;
+        }
+
+        private async Task<_itemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
         {
             List<double> prices = new List<double>();
-
-            HttpClient client = _clientFactory.CreateClient("EbayAPI");
 
             // Authenticate call with application access token
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
@@ -80,7 +99,7 @@ namespace Inventorizer.API.Ebay.Provider
 
                 For instance, ?q=running,shoes will retrieve items that mention running and shoes
                 */
-                { "q", String.Join(',', itemNames.First().Split(' ').Select(w => w.ToLower())) },
+                { "q", String.Join(',', itemName.Split(' ').Select(w => w.ToLower())) },
             });
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(
@@ -111,7 +130,11 @@ namespace Inventorizer.API.Ebay.Provider
                 );
             }
 
-            return prices;
+            return new _itemNameAndItsPrices()
+            {
+                ItemName = itemName,
+                ItemPrices = prices
+            };
         }
     }
 }
