@@ -6,7 +6,7 @@ namespace Inventorizer.API.Ebay
     {
         public string ItemName { get; set; }
 
-        public List<double> ItemPrices { get; set; }
+        public IEnumerable<double> ItemPrices { get; set; }
     }
 
 }

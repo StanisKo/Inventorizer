@@ -19,6 +19,19 @@ TODO:
 
 1. Request items concurrently (as Task -- look into TPL)
 
+2. Request in batches to speed things up
+
+3. Implement pagination
+
+4. !use IQuerable/IEnumerable = -- read from post tutorials! Since iterating over it is much faster than iterating over list
+(
+    this is also connected to pagination,
+    since IQuerable puts the work on the database,
+    while IEnumerable loads everything into memory
+
+    Therefore, if you need to sort or filter the collection, or limit it, use IQueyrable
+)
+
 NOTE:
 
 Stat service will have to translate USD to EUR since all prices are in USD
@@ -52,8 +65,7 @@ namespace Inventorizer.API.Ebay.Provider
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
-        // https://www.michalbialecki.com/2018/04/19/how-to-send-many-requests-in-parallel-in-asp-net-core/!
-        public async Task<List<ItemNameAndItsPrices>> RetrieveItemPrices(List<string> itemNames)
+        public async Task<IEnumerable<ItemNameAndItsPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
         {
             HttpClient client =_clientFactory.CreateClient("EbayAPI");
 
@@ -63,17 +75,12 @@ namespace Inventorizer.API.Ebay.Provider
 
             IEnumerable<ItemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
 
-            foreach(ItemNameAndItsPrices itemNameAndPrice in itemPrices)
-            {
-                Console.WriteLine($"{itemNameAndPrice.ItemName}: {itemNameAndPrice.ItemPrices.Count}");
-            }
-
-            return itemPrices.ToList();
+            return itemPrices;
         }
 
         private async Task<ItemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
         {
-            List<double> itemPrices = new List<double>();
+            IEnumerable<double> itemPrices = new List<double>();
 
             // Authenticate call with application access token
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
@@ -110,9 +117,7 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                itemPrices = parsedAPIResponse.ItemSummaries
-                    .Select(s => Convert.ToDouble(s.Price.Value))
-                    .ToList();
+                itemPrices = parsedAPIResponse.ItemSummaries.Select(s => Convert.ToDouble(s.Price.Value));
             }
             else
             {
