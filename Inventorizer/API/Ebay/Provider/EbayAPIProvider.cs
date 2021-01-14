@@ -44,8 +44,6 @@ namespace Inventorizer.API.Ebay.Provider
             { "limit", "10" }
         };
 
-        public string ErrorString { get; private set; }
-
         public EbayAPIProvider(IConfiguration configuration,
                                IHttpClientFactory clientFactory,
                                ILogger<EbayAPIProvider> logger,
@@ -59,18 +57,23 @@ namespace Inventorizer.API.Ebay.Provider
         {
             HttpClient client =_clientFactory.CreateClient("EbayAPI");
 
-            IEnumerable<Task> requestsToAPI = itemNames.Select(
+            IEnumerable<Task<ItemNameAndItsPrices>> requestsToAPI = itemNames.Select(
                 itemName => RetrievePricesForSingeItem(itemName, client)
             );
 
-            List<ItemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
+            IEnumerable<ItemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
 
-            return itemPrices;
+            foreach(ItemNameAndItsPrices itemNameAndPrice in itemPrices)
+            {
+                Console.WriteLine($"{itemNameAndPrice.ItemName}: {itemNameAndPrice.ItemPrices.Count}");
+            }
+
+            return itemPrices.ToList();
         }
 
         private async Task<ItemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
         {
-            List<double> prices = new List<double>();
+            List<double> itemPrices = new List<double>();
 
             // Authenticate call with application access token
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
@@ -107,26 +110,23 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                prices = parsedAPIResponse.ItemSummaries
+                itemPrices = parsedAPIResponse.ItemSummaries
                     .Select(s => Convert.ToDouble(s.Price.Value))
                     .ToList();
-
-                foreach (double price in prices)
-                {
-                    Console.WriteLine(price);
-                }
             }
             else
             {
                 _logger.LogError(
                     $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}"
                 );
+
+                // throw here and handle in controller
             }
 
             return new ItemNameAndItsPrices()
             {
                 ItemName = itemName,
-                ItemPrices = prices
+                ItemPrices = itemPrices
             };
         }
     }
