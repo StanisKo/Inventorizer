@@ -44,13 +44,6 @@ namespace Inventorizer.API.Ebay.Provider
             { "limit", "10" }
         };
 
-        private struct _itemNameAndItsPrices
-        {
-            public string ItemName { get; set; }
-
-            public List<double> ItemPrices { get; set; }
-        }
-
         public string ErrorString { get; private set; }
 
         public EbayAPIProvider(IConfiguration configuration,
@@ -62,7 +55,7 @@ namespace Inventorizer.API.Ebay.Provider
         }
 
         // https://www.michalbialecki.com/2018/04/19/how-to-send-many-requests-in-parallel-in-asp-net-core/!
-        public async Task<List<_itemNameAndItsPrices>> RetrieveItemPrices(List<string> itemNames)
+        public async Task<List<ItemNameAndItsPrices>> RetrieveItemPrices(List<string> itemNames)
         {
             HttpClient client =_clientFactory.CreateClient("EbayAPI");
 
@@ -70,12 +63,12 @@ namespace Inventorizer.API.Ebay.Provider
                 itemName => RetrievePricesForSingeItem(itemName, client)
             );
 
-            List<_itemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
+            List<ItemNameAndItsPrices> itemPrices = await Task.WhenAll(requestsToAPI);
 
             return itemPrices;
         }
 
-        private async Task<_itemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
+        private async Task<ItemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
         {
             List<double> prices = new List<double>();
 
@@ -130,7 +123,7 @@ namespace Inventorizer.API.Ebay.Provider
                 );
             }
 
-            return new _itemNameAndItsPrices()
+            return new ItemNameAndItsPrices()
             {
                 ItemName = itemName,
                 ItemPrices = prices
