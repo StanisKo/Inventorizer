@@ -34,6 +34,12 @@ TODO:
 
 5. Stats Service
 
+6. Front End
+
+7. Exception handling
+
+8.
+
 NOTE:
 
 Stat service will have to translate USD to EUR since all prices are in USD
@@ -67,6 +73,10 @@ namespace Inventorizer.API.Ebay.Provider
             _ebayAPIAuthService = ebayAPIAuthService;
         }
 
+        /*
+        Requests prices for all items present in the system
+        Returns a collection of structs each containing item name and the prices of first 10 matches
+        */
         public async Task<IEnumerable<ItemNameAndItsPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
         {
             HttpClient client =_clientFactory.CreateClient("EbayAPI");
@@ -80,6 +90,10 @@ namespace Inventorizer.API.Ebay.Provider
             return itemPrices;
         }
 
+        /*
+        Requests first 10 matches for the provided item name,
+        extract their prices in a collection and returns a struct with an item name and the prices
+        */
         private async Task<ItemNameAndItsPrices> RetrievePricesForSingeItem(string itemName, HttpClient client)
         {
             IEnumerable<double> itemPrices = new List<double>();
@@ -95,12 +109,10 @@ namespace Inventorizer.API.Ebay.Provider
                 new Dictionary<string, string>(_baseRequestParams)
             {
                 /*
-                "q" param from API is used for keyword search
+                https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#_samples
 
-                Different denominators apply different logic to provided keyword
-                Comma results in AND logic
-
-                For instance, ?q=running,shoes will retrieve items that mention running and shoes
+                q: <string> -- a string consisting of one or more keywords that are used to search for items;
+                if the keywords are separated by a comma, it is treated as an AND
                 */
                 { "q", String.Join(',', itemName.Split(' ').Select(w => w.ToLower())) },
             });
@@ -121,11 +133,12 @@ namespace Inventorizer.API.Ebay.Provider
             }
             else
             {
-                _logger.LogError(
-                    $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}"
-                );
+                string error =
+                    $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}";
 
-                // throw here and handle in controller
+                _logger.LogError(error);
+
+                throw new Exception(error);
             }
 
             return new ItemNameAndItsPrices()

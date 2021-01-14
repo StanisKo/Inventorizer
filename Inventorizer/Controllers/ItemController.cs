@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -35,7 +36,22 @@ namespace Inventorizer.Controllers
                 .Include(i => i.ItemDetail)
                 .ToListAsync();
 
-            await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
+            IEnumerable<ItemNameAndItsPrices> itemNameAndItsPrices;
+
+            try
+            {
+                itemNameAndItsPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
+            }
+            catch (Exception)
+            {
+                // Write view model error field here
+            }
+
+            /*
+            Stats service here must annotate qs with values
+
+            New view model needed that would also contain Error field (to propagate possible errors to the FE)
+            */
 
             return View(items);
         }

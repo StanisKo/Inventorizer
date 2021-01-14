@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Inventorizer.API.Ebay
+namespace Inventorizer.API.Ebay.Provider
 {
     public struct ItemNameAndItsPrices
     {
@@ -8,5 +8,4 @@ namespace Inventorizer.API.Ebay
 
         public IEnumerable<double> ItemPrices { get; set; }
     }
-
 }
