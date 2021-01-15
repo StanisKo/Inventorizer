@@ -30,6 +30,7 @@ namespace Inventorizer.Controllers
         {
             get => _pageIndex > 1;
         }
+
         private bool _hasNextPage
         {
             get => _pageIndex < _totalPages;
@@ -50,6 +51,10 @@ namespace Inventorizer.Controllers
             Implementing pagination directly on the call to db
             to put legwork on database instead of server memory ...
             */
+            int itemsCount = await _database.Items.CountAsync();
+
+            _totalPages = (int)Math.Ceiling(itemsCount / (double)_PAGE_SIZE);
+
             _pageIndex = pageIndex ?? 1;
 
             List<Item> items = await _database.Items
@@ -60,8 +65,6 @@ namespace Inventorizer.Controllers
                 .Skip((_pageIndex - 1) * _PAGE_SIZE)
                 .Take(_PAGE_SIZE)
                 .ToListAsync();
-
-            _totalPages = (int)Math.Ceiling(items.Count / (double)_PAGE_SIZE);
 
             IEnumerable<ItemPrices> itemPrices;
 
