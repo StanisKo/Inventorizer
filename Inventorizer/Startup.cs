@@ -46,7 +46,6 @@ namespace Inventorizer
 
             services.AddHttpClient("AllPurposeJsonAPI", config =>
             {
-                // No BaseAddress since the client is created for different services ...
                 config.Timeout = TimeSpan.FromSeconds(10);
                 config.DefaultRequestHeaders.Accept.Clear();
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
