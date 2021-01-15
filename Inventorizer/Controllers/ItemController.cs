@@ -21,7 +21,19 @@ namespace Inventorizer.Controllers
 
         private readonly EbayAPIProvider _ebayAPIProvider;
 
+        private int _pageIndex;
+        private int _totalPages;
+
         private const int _PAGE_SIZE = 10;
+
+        private bool _hasPreviousPage
+        {
+            get => _pageIndex > 1;
+        }
+        private bool _hasNextPage
+        {
+            get => _pageIndex < _totalPages;
+        }
 
         public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
         {
@@ -32,30 +44,35 @@ namespace Inventorizer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? pageIndex)
         {
-            int pageNumber = pageIndex ?? 1;
-
             /*
+            https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/sort-filter-page?view=aspnetcore-3.1#add-paging-to-students-index
+
             Implementing pagination directly on the call to db
             to put legwork on database instead of server memory ...
             */
+            _pageIndex = pageIndex ?? 1;
+
             List<Item> items = await _database.Items
                 .AsNoTracking()
                 .Include(i => i.Category)
                 .Include(i => i.ItemDetail)
                 .OrderByDescending(i => i.Price)
-                .Skip((pageNumber - 1) * _PAGE_SIZE)
+                .Skip((_pageIndex - 1) * _PAGE_SIZE)
                 .Take(_PAGE_SIZE)
                 .ToListAsync();
 
+            _totalPages = (int)Math.Ceiling(items.Count / (double)_PAGE_SIZE);
+
             IEnumerable<ItemPrices> itemPrices;
 
+            // Retrieve prices for available item names
             try
             {
                 itemPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
             }
             catch (Exception)
             {
-                // Write view model error field here
+
             }
 
             /*
@@ -64,7 +81,15 @@ namespace Inventorizer.Controllers
             New view model needed that would also contain Error field (to propagate possible errors to the FE)
             */
 
-            return View(items);
+            ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
+            {
+                Items = items,
+                PageIndex = _pageIndex,
+                HasPreviousPage = _hasPreviousPage,
+                HasNextPage = _hasNextPage
+            };
+
+            return View(itemIndexViewModel);
         }
 
         [HttpGet]
