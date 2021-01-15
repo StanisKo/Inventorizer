@@ -43,7 +43,7 @@ namespace Inventorizer.API.Ebay.Provider
         }
 
         /*
-        Requests prices for all items present in the system
+        Requests prices for provided item names
         Returns a collection of structs each containing item name and the prices of first 10 matches
         */
         public async Task<IEnumerable<ItemPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
