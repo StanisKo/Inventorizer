@@ -21,6 +21,8 @@ namespace Inventorizer.Controllers
 
         private readonly EbayAPIProvider _ebayAPIProvider;
 
+        private const int _PAGE_SIZE = 10;
+
         public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
         {
             _database = db;
@@ -28,12 +30,21 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageIndex)
         {
+            int pageNumber = pageIndex ?? 1;
+
+            /*
+            Implementing pagination directly on the call to db
+            to put legwork on database instead of server memory ...
+            */
             List<Item> items = await _database.Items
                 .AsNoTracking()
                 .Include(i => i.Category)
                 .Include(i => i.ItemDetail)
+                .OrderByDescending(i => i.Price)
+                .Skip((pageNumber - 1) * _PAGE_SIZE)
+                .Take(_PAGE_SIZE)
                 .ToListAsync();
 
             IEnumerable<ItemPrices> itemPrices;
