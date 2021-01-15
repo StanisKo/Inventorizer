@@ -40,6 +40,8 @@ TODO:
 
 8. Comments
 
+Use proper names for lambdas
+
 NOTE:
 
 Stat service will have to translate USD to EUR since all prices are in USD
@@ -79,7 +81,7 @@ namespace Inventorizer.API.Ebay.Provider
         */
         public async Task<IEnumerable<ItemNameAndItsPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
         {
-            HttpClient client =_clientFactory.CreateClient("EbayAPI");
+            HttpClient client =_clientFactory.CreateClient("AllPurposeJsonAPI");
 
             IEnumerable<Task<ItemNameAndItsPrices>> requestsToAPI = itemNames.Select(
                 itemName => RetrievePricesForSingleItem(itemName, client)
@@ -105,7 +107,7 @@ namespace Inventorizer.API.Ebay.Provider
             );
 
             string requestURL = QueryHelpers.AddQueryString(
-                client.BaseAddress.ToString(),
+                _configuration["EbayAPI:Base"],
                 new Dictionary<string, string>(_baseRequestParams)
                 {
                     /*

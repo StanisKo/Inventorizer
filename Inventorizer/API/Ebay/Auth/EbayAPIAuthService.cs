@@ -82,7 +82,7 @@ namespace Inventorizer.API.Ebay.Auth
             {
                 Interlocked.Increment(ref _numberOfAuthRequests);
 
-                HttpClient client = _clientFactory.CreateClient("EbayAPI");
+                HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
                 /*
                 Encode portal-provided application keys as base64 string and add to headers
