@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Inventorizer.API.Base
 {
-    public abstract class BaseAPI<T>
+    public class BaseAPI<T>
     {
         protected readonly IConfiguration _configuration;
 

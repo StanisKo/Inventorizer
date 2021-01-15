@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventorizer.Controllers.Base
 {
-    public abstract class CustomBaseController : Controller
+    public class CustomBaseController : Controller
     {
         protected const int _PAGE_SIZE = 10;
 
