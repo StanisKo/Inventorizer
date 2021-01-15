@@ -111,11 +111,7 @@ namespace Inventorizer.API.Ebay.Provider
                 throw new Exception(error);
             }
 
-            return new ItemPrices()
-            {
-                Name = itemName,
-                Prices = itemPrices
-            };
+            return new ItemPrices() { Name = itemName, Prices = itemPrices };
         }
     }
 }
