@@ -30,7 +30,7 @@ TODO:
     Therefore, if you need to sort or filter the collection, or limit it, use IQueyrable
 )
 
-4. Work on ForExService
+4. ForExService
 
 5. Stats Service
 
@@ -38,7 +38,7 @@ TODO:
 
 7. Exception handling
 
-8.
+8. Comments
 
 NOTE:
 
@@ -59,7 +59,7 @@ namespace Inventorizer.API.Ebay.Provider
         {
             /*
             To avoid unnecessary string operations, we do hardcode the filters in the format of:
-            ?format=<param_1>:<value>,<param_N>:<value>
+            ?filter=<param_1>:<value>,<param_N>:<value>
             */
             { "filter", "itemLocationCountry:DE,conditions:{USED}" },
             { "limit", "10" }
@@ -107,15 +107,16 @@ namespace Inventorizer.API.Ebay.Provider
             string requestURL = QueryHelpers.AddQueryString(
                 client.BaseAddress.ToString(),
                 new Dictionary<string, string>(_baseRequestParams)
-            {
-                /*
-                https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#_samples
+                {
+                    /*
+                    https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#_samples
 
-                q: <string> -- a string consisting of one or more keywords that are used to search for items;
-                if the keywords are separated by a comma, it is treated as an AND
-                */
-                { "q", String.Join(',', itemName.Split(' ').Select(w => w.ToLower())) },
-            });
+                    q: <string> -- a string consisting of one or more keywords that are used to search for items;
+                    if the keywords are separated by a comma, it is treated as an AND
+                    */
+                    { "q", String.Join(',', itemName.Split(' ').Select(w => w.ToLower())) },
+                }
+            );
 
             HttpRequestMessage requestToAPI = new HttpRequestMessage(
                 HttpMethod.Get,
@@ -137,6 +138,11 @@ namespace Inventorizer.API.Ebay.Provider
                     $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}";
 
                 _logger.LogError(error);
+
+                /*
+                Should through a custom exception that accepts exceptionArgs
+                so you know which call exactly caused an error?
+                */
 
                 throw new Exception(error);
             }
