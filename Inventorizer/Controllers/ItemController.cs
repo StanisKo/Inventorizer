@@ -36,11 +36,11 @@ namespace Inventorizer.Controllers
                 .Include(i => i.ItemDetail)
                 .ToListAsync();
 
-            IEnumerable<ItemNameAndItsPrices> itemNameAndItsPrices;
+            IEnumerable<ItemPrices> itemPrices;
 
             try
             {
-                itemNameAndItsPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
+                itemPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
             }
             catch (Exception)
             {
