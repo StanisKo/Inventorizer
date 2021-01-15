@@ -48,7 +48,7 @@ namespace Inventorizer.API.Ebay.Provider
         */
         public async Task<IEnumerable<ItemPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
         {
-            HttpClient client =_clientFactory.CreateClient("AllPurposeJsonAPI");
+            HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
             IEnumerable<Task<ItemPrices>> requestsToAPI = itemNames.Select(
                 itemName => RetrievePricesForSingleItem(itemName, client)
