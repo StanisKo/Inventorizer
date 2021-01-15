@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Inventorizer_Models.Models;
 using Inventorizer_DataAccess.Data;
 
+/*
+TODO:
+
+Add pagination
+*/
+
 namespace Inventorizer.Controllers
 {
     public class CategoryController : Controller

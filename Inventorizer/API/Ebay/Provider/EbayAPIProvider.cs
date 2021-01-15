@@ -19,6 +19,8 @@ TODO:
 
 1. Map to endpoint instead of requesting in controller
 
+https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio
+
 2. ForExService
 
 3. Stats Service
@@ -37,7 +39,7 @@ Use IEnumerable in Controllers
 
 NOTE:
 
-Stat service will have to translate USD to EUR since all prices are in USD
+Stats service will have to translate USD to EUR since all prices are in USD
 */
 
 namespace Inventorizer.API.Ebay.Provider
