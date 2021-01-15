@@ -61,8 +61,9 @@ namespace Inventorizer.API.Ebay.Provider
         }
 
         /*
-        Requests first 10 matches for the provided item name,
-        extract their prices in a collection and returns a struct with an item name and the prices
+        Requests first 10 results for the provided item name,
+        extracts their prices in a collection
+        and returns a struct with an item name and the prices
         */
         private async Task<ItemPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
         {
