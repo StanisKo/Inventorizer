@@ -51,11 +51,11 @@ namespace Inventorizer.Controllers
             Implementing pagination directly on the call to db
             to put legwork on database instead of server memory ...
             */
+            _pageIndex = pageIndex ?? 1;
+
             int itemsCount = await _database.Items.CountAsync();
 
             _totalPages = (int)Math.Ceiling(itemsCount / (double)_PAGE_SIZE);
-
-            _pageIndex = pageIndex ?? 1;
 
             List<Item> items = await _database.Items
                 .AsNoTracking()
@@ -77,12 +77,6 @@ namespace Inventorizer.Controllers
             {
 
             }
-
-            /*
-            Stats service here must annotate qs with values
-
-            New view model needed that would also contain Error field (to propagate possible errors to the FE)
-            */
 
             ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
             {

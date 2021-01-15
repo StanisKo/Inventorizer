@@ -17,10 +17,6 @@ using Inventorizer.API.Ebay.Auth;
 /*
 TODO:
 
-1. Request in batches to speed things up
-
-2. Implement pagination
-
 3. !use IQuerable/IEnumerable in controllers = -- read from post tutorials! Since iterating over it is much faster than iterating over list
 (
     this is also connected to pagination,
