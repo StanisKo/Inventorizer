@@ -12,29 +12,15 @@ using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
 using Inventorizer.API.Ebay.Provider;
+using Inventorizer.Controllers.Base;
 
 namespace Inventorizer.Controllers
 {
-    public class ItemController : Controller
+    public class ItemController : CustomBaseController
     {
         private readonly ApplicationDbContext _database;
 
         private readonly EbayAPIProvider _ebayAPIProvider;
-
-        private int _pageIndex;
-        private int _totalPages;
-
-        private const int _PAGE_SIZE = 10;
-
-        private bool _hasPreviousPage
-        {
-            get => _pageIndex > 1;
-        }
-
-        private bool _hasNextPage
-        {
-            get => _pageIndex < _totalPages;
-        }
 
         public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
         {
@@ -45,15 +31,9 @@ namespace Inventorizer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? pageIndex)
         {
-            /*
-            https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/sort-filter-page?view=aspnetcore-3.1#add-paging-to-students-index
-
-            Implementing pagination directly on the call to db
-            to put legwork on database instead of server memory ...
-            */
-            _pageIndex = pageIndex ?? 1;
-
             int itemsCount = await _database.Items.CountAsync();
+
+            _pageIndex = pageIndex ?? 1;
 
             _totalPages = (int)Math.Ceiling(itemsCount / (double)_PAGE_SIZE);
 
@@ -68,7 +48,6 @@ namespace Inventorizer.Controllers
 
             IEnumerable<ItemPrices> itemPrices;
 
-            // Retrieve prices for available item names
             try
             {
                 itemPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
@@ -82,8 +61,8 @@ namespace Inventorizer.Controllers
             {
                 Items = items,
                 PageIndex = _pageIndex,
-                HasPreviousPage = _hasPreviousPage,
-                HasNextPage = _hasNextPage
+                HasNextPage = _hasNextPage,
+                HasPreviousPage = _hasPreviousPage
             };
 
             return View(itemIndexViewModel);

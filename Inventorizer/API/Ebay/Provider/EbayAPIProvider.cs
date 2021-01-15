@@ -17,26 +17,23 @@ using Inventorizer.API.Ebay.Auth;
 /*
 TODO:
 
-3. !use IQuerable/IEnumerable in controllers = -- read from post tutorials! Since iterating over it is much faster than iterating over list
-(
-    this is also connected to pagination,
-    since IQuerable puts the work on the database,
-    while IEnumerable loads everything into memory
+1. Map to endpoint instead of requesting in controller
 
-    Therefore, if you need to sort or filter the collection, or limit it, use IQueyrable
-)
+2. ForExService
 
-4. ForExService
+3. Stats Service
 
-5. Stats Service
+4. Front End
 
-6. Front End
+5. Exception handling
 
-7. Exception handling
+6. Comments
 
-8. Comments
+Misc:
 
 Use proper names for lambdas
+
+Use IEnumerable in Controllers
 
 NOTE:
 

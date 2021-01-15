@@ -6,12 +6,12 @@ namespace Inventorizer_Models.ViewModels
 {
     public class ItemIndexViewModel
     {
-        public IEnumerable<Item> Items { get; set; }
-
         public int PageIndex { get; set; }
+
+        public bool HasNextPage { get; set; }
 
         public bool HasPreviousPage { get; set; }
 
-        public bool HasNextPage { get; set; }
+        public IEnumerable<Item> Items { get; set; }
     }
 }
