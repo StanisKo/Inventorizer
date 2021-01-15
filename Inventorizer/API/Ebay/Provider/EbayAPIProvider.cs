@@ -14,34 +14,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Inventorizer.API.Base;
 using Inventorizer.API.Ebay.Auth;
 
-/*
-TODO:
-
-1. Map to endpoint instead of requesting in controller
-
-https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio
-
-2. ForExService
-
-3. Stats Service
-
-4. Front End
-
-5. Exception handling
-
-6. Comments
-
-Misc:
-
-Use proper names for lambdas
-
-Use IEnumerable in Controllers
-
-NOTE:
-
-Stats service will have to translate USD to EUR since all prices are in USD
-*/
-
 namespace Inventorizer.API.Ebay.Provider
 {
     public class EbayAPIProvider : BaseAPI<EbayAPIProvider>

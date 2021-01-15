@@ -11,7 +11,6 @@ using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
-using Inventorizer.API.Ebay.Provider;
 using Inventorizer.Controllers.Base;
 
 namespace Inventorizer.Controllers
@@ -20,12 +19,9 @@ namespace Inventorizer.Controllers
     {
         private readonly ApplicationDbContext _database;
 
-        private readonly EbayAPIProvider _ebayAPIProvider;
-
-        public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
+        public ItemController(ApplicationDbContext db)
         {
             _database = db;
-            _ebayAPIProvider = ebayAPIProvider;
         }
 
         [HttpGet]
@@ -45,17 +41,6 @@ namespace Inventorizer.Controllers
                 .Skip((_pageIndex - 1) * _PAGE_SIZE)
                 .Take(_PAGE_SIZE)
                 .ToListAsync();
-
-            IEnumerable<ItemPrices> itemPrices;
-
-            try
-            {
-                itemPrices = await _ebayAPIProvider.RetrieveItemPrices(items.Select(i => i.Name));
-            }
-            catch (Exception)
-            {
-
-            }
 
             ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
             {
