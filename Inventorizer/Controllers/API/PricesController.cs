@@ -1,4 +1,6 @@
+using System;
 using System.Net.Mime;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -24,9 +26,9 @@ namespace Inventorizer.Controllers.API
     and returns a serialized collection of structs with the following shape:
 
     {
-        string ItemName;
+        string Name;
 
-        double AverageItemPrice;
+        double MarketPrice;
 
         float ChangeOverTime;
     }
@@ -38,9 +40,30 @@ namespace Inventorizer.Controllers.API
     [Produces(MediaTypeNames.Application.Json)]
     public class PricesController : ControllerBase
     {
-        public async Task <IEnumerable<ItemPrices>> GetItemPrices()
+        private readonly EbayAPIProvider _ebayAPIProvider;
+
+        public PricesController(EbayAPIProvider ebayAPIProvider)
         {
-            
+            _ebayAPIProvider = ebayAPIProvider;
+        }
+
+        [HttpGet]
+        public async Task <ActionResult<IEnumerable<ItemPricesStats>>> GetItemPrices([FromQuery] string[] itemNames)
+        {
+            // Null checks must be improved
+            if (itemNames == null || itemNames.Length == 0)
+            {
+                return BadRequest("itemNames: <string[]> is missing from the request");
+            }
+
+            IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(itemNames);
+
+            List<ItemPricesStats> test = new List<ItemPricesStats>()
+            {
+                new ItemPricesStats { Name = "test", MarketPrice = 1, ChangeOverTime = 1 }
+            };
+
+            return Ok(test);
         }
     }
 }
