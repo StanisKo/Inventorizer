@@ -47,7 +47,7 @@ namespace Inventorizer.API.Ebay.Provider
         Returns a collection of structs each containing item name
         and the prices of first 10 results for each name
         */
-        public async Task<IEnumerable<ItemPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
+        public async Task <IEnumerable<ItemPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
         {
             HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
@@ -65,7 +65,7 @@ namespace Inventorizer.API.Ebay.Provider
         extracts their prices in a collection
         and returns a struct with an item name and the prices
         */
-        private async Task<ItemPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
+        private async Task <ItemPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
         {
             IEnumerable<double> itemPrices = new List<double>();
 

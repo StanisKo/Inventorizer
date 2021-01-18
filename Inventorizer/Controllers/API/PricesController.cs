@@ -1,6 +1,10 @@
 using System.Net.Mime;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Inventorizer.API.Ebay.Provider;
 
 /*
 1. Map prices to endpoint instead of requesting in MVC controller
@@ -8,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-5.0
 
 https://stackoverflow.com/questions/44914722/how-to-add-web-api-controller-to-an-existing-asp-net-core-mvc
+
+https://www.youtube.com/watch?v=fmvcAzHpsk8 33:25
 */
 
 namespace Inventorizer.Controllers.API
@@ -30,8 +36,11 @@ namespace Inventorizer.Controllers.API
     [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
-    public class PricesAPIController : ControllerBase
+    public class PricesController : ControllerBase
     {
-        
+        public async Task <IEnumerable<ItemPrices>> GetItemPrices()
+        {
+            
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task <IActionResult> Index(int? pageIndex)
         {
             int itemsCount = await _database.Items.CountAsync();
 
@@ -54,7 +54,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateOrUpdate(int? id)
+        public async Task <IActionResult> CreateOrUpdate(int? id)
         {
             ItemViewModel itemViewModel = new ItemViewModel
             {
@@ -82,7 +82,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdate(ItemViewModel itemViewModel)
+        public async Task <IActionResult> CreateOrUpdate(ItemViewModel itemViewModel)
         {
             if (itemViewModel.Item.Item_Id == 0)
             {
@@ -99,7 +99,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateOrUpdateDetail(int id)
+        public async Task <IActionResult> CreateOrUpdateDetail(int id)
         {
             Item itemToCreateOrUpdateDetail = await _database.Items
                 .Include(i => i.ItemDetail)
@@ -115,7 +115,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdateDetail(Item item)
+        public async Task <IActionResult> CreateOrUpdateDetail(Item item)
         {
             if (item.ItemDetail.ItemDetail_Id == 0)
             {
@@ -137,7 +137,7 @@ namespace Inventorizer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task <IActionResult> Delete(int id)
         {
             Item itemToDelete = await _database.Items.FirstOrDefaultAsync(i => i.Item_Id == id);
 
