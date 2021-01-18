@@ -1,6 +1,6 @@
 using System;
+using System.Linq;
 using System.Net.Mime;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -12,8 +12,6 @@ using Inventorizer.API.Ebay.Provider;
 1. Map prices to endpoint instead of requesting in MVC controller
 
 https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-5.0
-
-https://stackoverflow.com/questions/44914722/how-to-add-web-api-controller-to-an-existing-asp-net-core-mvc
 
 https://www.youtube.com/watch?v=fmvcAzHpsk8 33:25
 */
@@ -50,10 +48,23 @@ namespace Inventorizer.Controllers.API
         [HttpGet]
         public async Task <ActionResult<IEnumerable<ItemPricesStats>>> GetItemPrices([FromQuery] string[] itemNames)
         {
-            // Null checks must be improved
-            if (itemNames == null || itemNames.Length == 0)
+
+            // Check if param is in query string
+            if (!Request.Query.ContainsKey("itemNames"))
             {
                 return BadRequest("itemNames: <string[]> is missing from the request");
+            }
+
+            // Check if param has values
+            if (Array.Exists(itemNames, item => String.IsNullOrEmpty(item)))
+            {
+                return BadRequest("itemNames: <string[]> is empty or at least one value is null or empty");
+            }
+
+            // Check if param contains strings only
+            if (itemNames.Any(name => int.TryParse(name, out _)))
+            {
+                return BadRequest("itemNames: <string[]> should not contain integers");
             }
 
             IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(itemNames);
