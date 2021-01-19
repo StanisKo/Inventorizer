@@ -31,7 +31,7 @@
         $.get(`${baseURL}?${querystring}`).done((itemPrices) => {
             console.log(itemPrices);
 
-            $(".alert-info").slideUp();
+            setTimeout(() => $(".alert-info").slideUp(), 1500);
         });
     }
 });
