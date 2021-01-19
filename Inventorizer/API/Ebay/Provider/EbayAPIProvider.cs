@@ -51,6 +51,12 @@ namespace Inventorizer.API.Ebay.Provider
         {
             HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
+            // Authenticate calls with application access token
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                _ebayAPIAuthService.ParsedAuth.access_token
+            );
+
             IEnumerable<Task<ItemPrices>> requestsToAPI = itemNames.Select(
                 itemName => RetrievePricesForSingleItem(itemName, client)
             );
@@ -68,12 +74,6 @@ namespace Inventorizer.API.Ebay.Provider
         private async Task <ItemPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
         {
             IEnumerable<double> itemPrices = new List<double>();
-
-            // Authenticate call with application access token
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                "Bearer",
-                _ebayAPIAuthService.ParsedAuth.access_token
-            );
 
             string requestURL = QueryHelpers.AddQueryString(
                 _configuration["EbayAPI:Base"],
