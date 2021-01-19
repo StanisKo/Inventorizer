@@ -12,16 +12,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
-namespace Inventorizer.API.Auth
+using Inventorizer.API.Base;
+
+namespace Inventorizer.API.Ebay.Auth
 {
-    public class EbayAPIAuthService : IHostedService
+    public class EbayAPIAuthService : BaseAPI<EbayAPIAuthService>, IHostedService
     {
-        private readonly IConfiguration _configuration;
-
-        private readonly IHttpClientFactory _clientFactory;
-
-        private readonly ILogger<EbayAPIAuthService> _logger;
-
         private string _clientId;
         private string _clientSecret;
 
@@ -33,12 +29,8 @@ namespace Inventorizer.API.Auth
         public ParsedAuth ParsedAuth { get; private set; }
 
         public EbayAPIAuthService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<EbayAPIAuthService> logger)
+            : base(configuration, clientFactory, logger)
         {
-            _configuration = configuration;
-            _clientFactory = clientFactory;
-
-            _logger = logger;
-
             _clientId = _configuration["ClientId"];
             _clientSecret = _configuration["ClientSecret"];
         }
@@ -64,7 +56,7 @@ namespace Inventorizer.API.Auth
 
             int intervalFromAPI = (int)TimeSpan.FromSeconds(ParsedAuth.expires_in).TotalMilliseconds;
 
-            _authRequestTimer?.Change(0, intervalFromAPI);
+            _authRequestTimer.Change(0, intervalFromAPI);
 
             return Task.CompletedTask;
         }
@@ -90,7 +82,7 @@ namespace Inventorizer.API.Auth
             {
                 Interlocked.Increment(ref _numberOfAuthRequests);
 
-                HttpClient client = _clientFactory.CreateClient("EbayAPI");
+                HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
                 /*
                 Encode portal-provided application keys as base64 string and add to headers
@@ -132,7 +124,7 @@ namespace Inventorizer.API.Auth
                 }
                 else
                 {
-                    _authRequestTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                    _authRequestTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                     _logger.LogError(
                         $"Auth failed. {(int)responseFromAuth.StatusCode}: {responseFromAuth.ReasonPhrase}"

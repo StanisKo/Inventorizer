@@ -85,3 +85,7 @@ body {
 .align-left > a {
   margin: 0.25em;
 }
+
+.hidden {
+  display: none;
+}

@@ -11,8 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
-using Inventorizer.API.Auth;
-using Inventorizer.API;
+
+using Inventorizer.API.Ebay.Auth;
+using Inventorizer.API.Ebay.Provider;
 
 namespace Inventorizer
 {
@@ -43,9 +44,9 @@ namespace Inventorizer
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-            services.AddHttpClient("EbayAPI", config =>
+            services.AddHttpClient("AllPurposeJsonAPI", config =>
             {
-                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI:Base"));
+                config.Timeout = TimeSpan.FromSeconds(10);
                 config.DefaultRequestHeaders.Accept.Clear();
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
