@@ -8,14 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Inventorizer.API.Ebay.Provider;
 
-/*
-1. Map prices to endpoint instead of requesting in MVC controller
-
-https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-5.0
-
-https://www.youtube.com/watch?v=fmvcAzHpsk8 33:25
-*/
-
 namespace Inventorizer.Controllers.API
 {
     /*
