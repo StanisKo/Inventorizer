@@ -27,7 +27,7 @@ namespace Inventorizer.API.ForEx
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before foreign exchange service started");
+                _logger.LogError("Cancellation request received before foreign exchange service started");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }
@@ -41,7 +41,7 @@ namespace Inventorizer.API.ForEx
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before foreign exchange service stopped");
+                _logger.LogError("Cancellation request received before foreign exchange service stopped");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }
