@@ -14,6 +14,7 @@ using Inventorizer_DataAccess.Data;
 
 using Inventorizer.API.Ebay.Auth;
 using Inventorizer.API.Ebay.Provider;
+using Inventorizer.API.ForEx;
 
 namespace Inventorizer
 {
@@ -57,6 +58,13 @@ namespace Inventorizer
             */
             services.AddSingleton<EbayAPIAuthService>();
             services.AddSingleton<IHostedService>(sp => sp.GetService<EbayAPIAuthService>());
+
+            /*
+            Doing the same for foreign exchange service, so that Stats
+            can access foreign exchange rates via DI
+            */
+            services.AddSingleton<ForExAPIService>();
+            services.AddSingleton<IHostedService>(sp => sp.GetService<ForExAPIService>());
 
             services.AddSingleton<EbayAPIProvider>();
         }

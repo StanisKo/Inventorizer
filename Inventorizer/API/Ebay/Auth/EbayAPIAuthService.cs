@@ -39,7 +39,7 @@ namespace Inventorizer.API.Ebay.Auth
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before authentication job started");
+                _logger.LogError("Cancellation request is received before authentication service started");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }
@@ -65,7 +65,7 @@ namespace Inventorizer.API.Ebay.Auth
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before authentication job stopped");
+                _logger.LogError("Cancellation request is received before authentication service stopped");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }
