@@ -15,6 +15,8 @@ namespace Inventorizer.API.ForEx
 {
     public class ForExAPIService : BaseAPI<ForExAPIService>, IHostedService
     {
+        public ParsedExhangeRate ParsedExhangeRate { get; private set; }
+
         public ForExAPIService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<ForExAPIService> logger)
             : base(configuration, clientFactory, logger)
         {
@@ -60,9 +62,7 @@ namespace Inventorizer.API.ForEx
 
             if (responseFromForExAPI.IsSuccessStatusCode)
             {
-                object parsedExhangeRates = await responseFromForExAPI.Content.ReadFromJsonAsync<object>();
-
-                Console.WriteLine(parsedExhangeRates);
+                ParsedExhangeRate = await responseFromForExAPI.Content.ReadFromJsonAsync<ParsedExhangeRate>();
 
                 _logger.LogInformation("Foreign exchange rates retrieved successfully");
             }
