@@ -101,7 +101,9 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                itemPrices = parsedAPIResponse.ItemSummaries.Select(s => Convert.ToDouble(s.Price.Value));
+                // If no prices for the provided item name are available, return empty list
+                itemPrices =
+                    parsedAPIResponse.ItemSummaries?.Select(s => Convert.ToDouble(s.Price.Value)) ?? new List<double>();
             }
             else
             {

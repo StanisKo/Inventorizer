@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-$(() => {
+﻿$(() => {
     $("#datepicker").datepicker({});
 
     $(".price").text((_, text) => {
@@ -15,4 +12,20 @@ $(() => {
 
         return `${dateOfPurchase.getDate()}-${dateOfPurchase.getMonth() + 1}-${dateOfPurchase.getFullYear()}`
     });
+
+    // Request item prices from item index view
+    if (window.location.pathname === '/Item') {
+        const key = "itemNames";
+
+        // Grab names from html nodes
+        const itemNames = $(".itemName").map((_, node) => $(node).text().trim());
+
+        // Declare base URL
+        const baseURL = new URL(`${window.location.protocol}//${window.location.host}/api/prices`);
+
+        // Add names to querystring
+        const querystring = itemNames.toArray().map((name) => `${key}=${name}`).join("&");
+
+        $.get(`${baseURL}?${querystring}`).done((itemPrices) => console.log(itemPrices));
+    }
 });
