@@ -15,6 +15,8 @@
 
     // Request item prices from item index view
     if (window.location.pathname === '/Item') {
+        $(".alert-info").slideDown();
+
         const key = "itemNames";
 
         // Grab names from html nodes
@@ -26,6 +28,10 @@
         // Add names to querystring
         const querystring = itemNames.toArray().map((name) => `${key}=${name}`).join("&");
 
-        $.get(`${baseURL}?${querystring}`).done((itemPrices) => console.log(itemPrices));
+        $.get(`${baseURL}?${querystring}`).done((itemPrices) => {
+            console.log(itemPrices);
+
+            $(".alert-info").slideUp();
+        });
     }
 });
