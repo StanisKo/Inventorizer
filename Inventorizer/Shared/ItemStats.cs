@@ -1,6 +1,6 @@
-namespace Inventorizer.Controllers.API
+namespace Inventorizer.Shared
 {
-    public struct ItemPricesStats
+    public struct ItemStats
     {
         public string Name { get; set; }
 

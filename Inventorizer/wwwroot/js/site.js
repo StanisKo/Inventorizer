@@ -17,7 +17,7 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const url = new URL(`${window.location.protocol}//${window.location.host}/api/prices`);
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
 
         $.get(url).done((itemPrices) => {
             console.log(itemPrices);

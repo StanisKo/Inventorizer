@@ -50,12 +50,12 @@ namespace Inventorizer.Controllers
 
             We also serialize it since TempData does not support storing complex types
             */
-            IEnumerable<ItemNameAndPrice> itemNamesAndPrices = items.Select(
-                item => new ItemNameAndPrice { Name = item.Name, Price = item.Price }
+            IEnumerable<ItemFromDb> itemsFromDatabase = items.Select(
+                item => new ItemFromDb { Name = item.Name, Price = item.Price }
             );
 
-            TempData["itemNamesAndPrices"] =
-                JsonSerializer.Serialize<IEnumerable<ItemNameAndPrice>>(itemNamesAndPrices);
+            TempData["itemsFromDatabase"] =
+                JsonSerializer.Serialize<IEnumerable<ItemFromDb>>(itemsFromDatabase);
 
             ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
             {

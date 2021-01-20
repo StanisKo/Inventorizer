@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net.Mime;
 using System.Text.Json;
@@ -7,8 +6,8 @@ using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Inventorizer.API.Ebay.Provider;
 using Inventorizer.Shared;
+using Inventorizer.API.Ebay.Provider;
 
 namespace Inventorizer.Controllers.API
 {
@@ -26,34 +25,34 @@ namespace Inventorizer.Controllers.API
     }
 
     Inheriting from Controller and not ControllerBase to allow
-    exhange of data (item names and initial prices)
+    exhange of data (item names and prices retrieved from database)
     between ItemController and MarketPricesController via TempData dictionary
     */
     [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
-    public class PricesController : Controller
+    public class MarketPricesController : Controller
     {
         private readonly EbayAPIProvider _ebayAPIProvider;
 
-        public PricesController(EbayAPIProvider ebayAPIProvider)
+        public MarketPricesController(EbayAPIProvider ebayAPIProvider)
         {
             _ebayAPIProvider = ebayAPIProvider;
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<ItemPricesStats>>> GetItemPrices()
+        public async Task <ActionResult<IEnumerable<ItemStats>>> GetItemPrices()
         {
-            IEnumerable<ItemNameAndPrice> itemNamesAndPrices =
-                JsonSerializer.Deserialize<IEnumerable<ItemNameAndPrice>>(TempData["itemNamesAndPrices"].ToString());
+            IEnumerable<ItemFromDb> itemsFromDatabase =
+                JsonSerializer.Deserialize<IEnumerable<ItemFromDb>>(TempData["itemsFromDatabase"].ToString());
 
-            IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(
-                itemNamesAndPrices.Select(item => item.Name)
+            IEnumerable<ItemPrices> marketPrices = await _ebayAPIProvider.RetrieveItemPrices(
+                itemsFromDatabase.Select(item => item.Name)
             );
 
-            List<ItemPricesStats> test = new List<ItemPricesStats>()
+            List<ItemStats> test = new List<ItemStats>()
             {
-                new ItemPricesStats { Name = "test", MarketPrice = 1, ChangeOverTime = 1 }
+                new ItemStats { Name = "test", MarketPrice = 1, ChangeOverTime = 1 }
             };
 
             return Ok(test);

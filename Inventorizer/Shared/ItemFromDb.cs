@@ -1,6 +1,6 @@
 namespace Inventorizer.Shared
 {
-    public struct ItemNameAndPrice
+    public struct ItemFromDb
     {
         public string Name { get; set; }
 
