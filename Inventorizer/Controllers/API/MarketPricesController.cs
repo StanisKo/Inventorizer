@@ -41,12 +41,12 @@ namespace Inventorizer.Controllers.API
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<ItemStats>>> GetItemPrices()
+        public async Task <ActionResult<IEnumerable<ItemStats>>> GetMarketPrices()
         {
             IEnumerable<ItemFromDb> itemsFromDatabase =
                 JsonSerializer.Deserialize<IEnumerable<ItemFromDb>>(TempData["itemsFromDatabase"].ToString());
 
-            IEnumerable<ItemPrices> marketPrices = await _ebayAPIProvider.RetrieveItemPrices(
+            IEnumerable<MarketPrices> marketPrices = await _ebayAPIProvider.RetrieveMarketPrices(
                 itemsFromDatabase.Select(item => item.Name)
             );
 

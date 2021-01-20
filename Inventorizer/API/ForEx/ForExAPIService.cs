@@ -19,7 +19,7 @@ Send a signal in item controller, call pricesController from item controller?
 
 And if so -- how does FE will know that is safe to fetch?
 
-Also, rename itemPrices to marketPrices where needed
+Also, rename MarketPrices to marketPrices where needed
 
 Worst case scenario -- add prices to the request payload on the FE
 

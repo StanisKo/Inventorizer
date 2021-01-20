@@ -19,8 +19,8 @@
 
         const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
 
-        $.get(url).done((itemPrices) => {
-            console.log(itemPrices);
+        $.get(url).done((MarketPrices) => {
+            console.log(MarketPrices);
 
             setTimeout(() => $(".alert-info").slideUp(), 1500);
         });
