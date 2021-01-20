@@ -16,6 +16,12 @@ using Inventorizer.API.Base;
 
 namespace Inventorizer.API.Ebay.Auth
 {
+    /*
+    A background service that retrieves application access token on boot
+    and remints it based on interval provided by ebay authentication service
+
+    Makes token available to EbayAPIProvider via DI
+    */
     public class EbayAPIAuthService : BaseAPI<EbayAPIAuthService>, IHostedService
     {
         private string _clientId;

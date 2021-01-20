@@ -24,8 +24,8 @@ namespace Inventorizer.Controllers.API
         float ChangeOverTime;
     }
 
-    Inheriting from Controller and not ControllerBase to allow
-    exhange of data (item names and prices retrieved from database)
+    Inherits from Controller and not ControllerBase to allow exhange of data
+    (item names and prices retrieved from database)
     between ItemController and MarketPricesController via TempData dictionary
     */
     [ApiController]
@@ -41,10 +41,11 @@ namespace Inventorizer.Controllers.API
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<ItemStats>>> GetMarketPrices()
+        public async Task <ActionResult<IEnumerable<ItemStats>>> GetMarketPricesAndStats()
         {
-            IEnumerable<ItemFromDb> itemsFromDatabase =
-                JsonSerializer.Deserialize<IEnumerable<ItemFromDb>>(TempData["itemsFromDatabase"].ToString());
+            IEnumerable<ItemFromDb> itemsFromDatabase = JsonSerializer.Deserialize<IEnumerable<ItemFromDb>>(
+                TempData["itemsFromDatabase"].ToString()
+            );
 
             IEnumerable<MarketPrices> marketPrices = await _ebayAPIProvider.RetrieveMarketPrices(
                 itemsFromDatabase.Select(item => item.Name)

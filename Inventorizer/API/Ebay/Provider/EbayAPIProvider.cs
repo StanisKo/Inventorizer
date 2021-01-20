@@ -17,6 +17,18 @@ using Inventorizer.API.Ebay.Auth;
 
 namespace Inventorizer.API.Ebay.Provider
 {
+    /*
+    A provider that is responsible for retrieving market prices for provided item names
+
+    Retrieves first 10 results for each name and return a collection of structs in the shape of:
+    {
+        string Name;
+
+        IEnumerable<double> Prices;
+    }
+
+    Each call is authenticated with a token provided by EbayAPIAuthService
+    */
     public class EbayAPIProvider : BaseAPI<EbayAPIProvider>
     {
         private readonly EbayAPIAuthService _ebayAPIAuthService;
@@ -102,7 +114,7 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                // If no prices for the provided item name are available, return empty list
+                // If there are no results for provided item name, return empty list
                 marketPrices =
                     parsedAPIResponse.ItemSummaries?.Select(s => Convert.ToDouble(s.Price.Value)) ?? new List<double>();
             }

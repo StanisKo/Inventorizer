@@ -54,8 +54,7 @@ namespace Inventorizer.Controllers
                 item => new ItemFromDb { Name = item.Name, Price = item.Price }
             );
 
-            TempData["itemsFromDatabase"] =
-                JsonSerializer.Serialize<IEnumerable<ItemFromDb>>(itemsFromDatabase);
+            TempData["itemsFromDatabase"] = JsonSerializer.Serialize<IEnumerable<ItemFromDb>>(itemsFromDatabase);
 
             ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
             {
