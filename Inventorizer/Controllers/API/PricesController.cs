@@ -42,36 +42,14 @@ namespace Inventorizer.Controllers.API
         }
 
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<ItemPricesStats>>> GetItemPrices([FromQuery] string[] itemNames)
+        public async Task <ActionResult<IEnumerable<ItemPricesStats>>> GetItemPrices()
         {
-
-            // Check if param is in query string
-            if (!Request.Query.ContainsKey("itemNames"))
-            {
-                return BadRequest("itemNames: <string[]> is missing from the request");
-            }
-
-            // Check if param has values
-            if (Array.Exists(itemNames, item => String.IsNullOrEmpty(item)))
-            {
-                return BadRequest("itemNames: <string[]> is empty or at least one value is null or empty");
-            }
-
-            // Check if param contains strings only
-            if (itemNames.Any(name => int.TryParse(name, out _)))
-            {
-                return BadRequest("itemNames: <string[]> should not contain integers");
-            }
-
             IEnumerable<ItemNameAndPrice> itemNamesAndPrices =
                 JsonSerializer.Deserialize<IEnumerable<ItemNameAndPrice>>(TempData["itemNamesAndPrices"].ToString());
 
-            foreach (ItemNameAndPrice item in itemNamesAndPrices)
-            {
-                Console.WriteLine(item.Name);
-            }
-
-            IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(itemNames);
+            IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(
+                itemNamesAndPrices.Select(item => item.Name)
+            );
 
             List<ItemPricesStats> test = new List<ItemPricesStats>()
             {

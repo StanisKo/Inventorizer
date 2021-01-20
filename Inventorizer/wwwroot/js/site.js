@@ -17,18 +17,9 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const key = "itemNames";
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/prices`);
 
-        // Grab names from html nodes
-        const itemNames = $(".itemName").map((_, node) => $(node).text().trim());
-
-        // Declare base URL
-        const baseURL = new URL(`${window.location.protocol}//${window.location.host}/api/prices`);
-
-        // Add names to querystring
-        const querystring = itemNames.toArray().map((name) => `${key}=${name}`).join("&");
-
-        $.get(`${baseURL}?${querystring}`).done((itemPrices) => {
+        $.get(url).done((itemPrices) => {
             console.log(itemPrices);
 
             setTimeout(() => $(".alert-info").slideUp(), 1500);
