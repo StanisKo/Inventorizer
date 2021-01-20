@@ -1,12 +1,14 @@
 using System;
 using System.Linq;
 using System.Net.Mime;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 
 using Inventorizer.API.Ebay.Provider;
+using Inventorizer.Shared;
 
 namespace Inventorizer.Controllers.API
 {
@@ -23,12 +25,14 @@ namespace Inventorizer.Controllers.API
         float ChangeOverTime;
     }
 
-    Expects a collection of item names to fetch prices for, that is supplied via AJAX request from FE
+    Inheriting from Controller and not ControllerBase to allow
+    exhange of data (item names and initial prices)
+    between ItemController and MarketPricesController via TempData dictionary
     */
     [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
-    public class PricesController : ControllerBase
+    public class PricesController : Controller
     {
         private readonly EbayAPIProvider _ebayAPIProvider;
 
@@ -57,6 +61,14 @@ namespace Inventorizer.Controllers.API
             if (itemNames.Any(name => int.TryParse(name, out _)))
             {
                 return BadRequest("itemNames: <string[]> should not contain integers");
+            }
+
+            IEnumerable<ItemNameAndPrice> itemNamesAndPrices =
+                JsonSerializer.Deserialize<IEnumerable<ItemNameAndPrice>>(TempData["itemNamesAndPrices"].ToString());
+
+            foreach (ItemNameAndPrice item in itemNamesAndPrices)
+            {
+                Console.WriteLine(item.Name);
             }
 
             IEnumerable<ItemPrices> itemPrices = await _ebayAPIProvider.RetrieveItemPrices(itemNames);

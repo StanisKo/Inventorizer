@@ -43,7 +43,11 @@ namespace Inventorizer
                 options => options.UseNpgsql(connectionStringBuilder.ConnectionString)
             );
 
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services
+                .AddSession()
+                .AddControllersWithViews()
+                .AddSessionStateTempDataProvider()
+                .AddRazorRuntimeCompilation();
 
             services.AddHttpClient("AllPurposeJsonAPI", config =>
             {
@@ -88,6 +92,8 @@ namespace Inventorizer
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

@@ -11,6 +11,25 @@ using Microsoft.Extensions.Configuration;
 
 using Inventorizer.API.Base;
 
+/*
+Since stats needs an access to initial item prices (and not only market prices),
+find a way to provide prices controller with initial prcies without involving FE
+
+Send a signal in item controller, call pricesController from item controller?
+
+And if so -- how does FE will know that is safe to fetch?
+
+Also, rename itemPrices to marketPrices where needed
+
+Worst case scenario -- add prices to the request payload on the FE
+
+EbayAPIProvider should have a field to store { name, price } of items
+Write to that field from item controller
+
+And when EbayAPIProvider will be called from PricesController, it will use internal params
+instead of those passed to it from AJAX request
+*/
+
 namespace Inventorizer.API.ForEx
 {
     public class ForExAPIService : BaseAPI<ForExAPIService>, IHostedService
