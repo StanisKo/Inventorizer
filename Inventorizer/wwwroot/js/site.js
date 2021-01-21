@@ -28,9 +28,9 @@
 
                 const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
 
-                $(node).siblings(".market-price").first().text(formattedMarketPrice);
+                $(node).siblings(".market-price").first().text(`€ ${formattedMarketPrice}`);
 
-                $(node).siblings(".gain-loss").first().text(formattedGainLoss);
+                $(node).siblings(".gain-loss").first().text(`€ ${formattedGainLoss}`);
 
             });
 
