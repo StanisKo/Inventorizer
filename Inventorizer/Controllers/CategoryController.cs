@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Inventorizer_Models.Models;
 using Inventorizer_DataAccess.Data;
 
+/*
+TODO:
+
+Add pagination
+*/
+
 namespace Inventorizer.Controllers
 {
     public class CategoryController : Controller
@@ -19,7 +25,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task <IActionResult> Index()
         {
             List<Category> categories =  await _database.Categories.AsNoTracking().ToListAsync();
 
@@ -27,7 +33,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateOrUpdate(int? id)
+        public async Task <IActionResult> CreateOrUpdate(int? id)
         {
             if (id == null)
             {
@@ -48,7 +54,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdate(Category category)
+        public async Task <IActionResult> CreateOrUpdate(Category category)
         {
             if (ModelState.IsValid)
             {
@@ -69,7 +75,7 @@ namespace Inventorizer.Controllers
             return View(category);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task <IActionResult> Delete(int id)
         {
             Category categoryToDelete = await _database.Categories.FirstOrDefaultAsync(c => c.Category_Id == id);
 

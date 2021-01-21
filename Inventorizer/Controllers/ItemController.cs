@@ -1,6 +1,8 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,36 +12,63 @@ using Inventorizer_DataAccess.Data;
 using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
-using Inventorizer.API;
+using Inventorizer.Controllers.Base;
+using Inventorizer.Shared;
 
 namespace Inventorizer.Controllers
 {
-    public class ItemController : Controller
+    public class ItemController : CustomBaseController
     {
         private readonly ApplicationDbContext _database;
 
-        private readonly EbayAPIProvider _ebayAPIProvider;
-
-        public ItemController(ApplicationDbContext db, EbayAPIProvider ebayAPIProvider)
+        public ItemController(ApplicationDbContext db)
         {
             _database = db;
-            _ebayAPIProvider = ebayAPIProvider;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task <IActionResult> Index(int? pageIndex)
         {
+            int itemsCount = await _database.Items.CountAsync();
+
+            _pageIndex = pageIndex ?? 1;
+
+            _totalPages = (int)Math.Ceiling(itemsCount / (double)_PAGE_SIZE);
+
             List<Item> items = await _database.Items
                 .AsNoTracking()
                 .Include(i => i.Category)
                 .Include(i => i.ItemDetail)
+                .OrderByDescending(i => i.Price)
+                .Skip((_pageIndex - 1) * _PAGE_SIZE)
+                .Take(_PAGE_SIZE)
                 .ToListAsync();
 
-            return View(items);
+            /*
+            Store names and prices in TempData dict
+            so that MarketPricesController can access them and perform requests to API and calculations
+
+            We also serialize it since TempData does not support storing complex types
+            */
+            IEnumerable<ItemFromDb> itemsFromDatabase = items.Select(
+                item => new ItemFromDb { Name = item.Name, Price = item.Price }
+            );
+
+            TempData["itemsFromDatabase"] = JsonSerializer.Serialize<IEnumerable<ItemFromDb>>(itemsFromDatabase);
+
+            ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
+            {
+                Items = items,
+                PageIndex = _pageIndex,
+                HasNextPage = _hasNextPage,
+                HasPreviousPage = _hasPreviousPage
+            };
+
+            return View(itemIndexViewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateOrUpdate(int? id)
+        public async Task <IActionResult> CreateOrUpdate(int? id)
         {
             ItemViewModel itemViewModel = new ItemViewModel
             {
@@ -67,7 +96,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdate(ItemViewModel itemViewModel)
+        public async Task <IActionResult> CreateOrUpdate(ItemViewModel itemViewModel)
         {
             if (itemViewModel.Item.Item_Id == 0)
             {
@@ -84,7 +113,7 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateOrUpdateDetail(int id)
+        public async Task <IActionResult> CreateOrUpdateDetail(int id)
         {
             Item itemToCreateOrUpdateDetail = await _database.Items
                 .Include(i => i.ItemDetail)
@@ -100,7 +129,7 @@ namespace Inventorizer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdateDetail(Item item)
+        public async Task <IActionResult> CreateOrUpdateDetail(Item item)
         {
             if (item.ItemDetail.ItemDetail_Id == 0)
             {
@@ -122,7 +151,7 @@ namespace Inventorizer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task <IActionResult> Delete(int id)
         {
             Item itemToDelete = await _database.Items.FirstOrDefaultAsync(i => i.Item_Id == id);
 

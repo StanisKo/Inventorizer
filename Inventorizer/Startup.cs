@@ -11,8 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 using Inventorizer_DataAccess.Data;
-using Inventorizer.API.Auth;
-using Inventorizer.API;
+
+using Inventorizer.API.Ebay.Auth;
+using Inventorizer.API.Ebay.Provider;
+using Inventorizer.API.ForEx;
+
+using Inventorizer.Stats;
 
 namespace Inventorizer
 {
@@ -41,14 +45,29 @@ namespace Inventorizer
                 options => options.UseNpgsql(connectionStringBuilder.ConnectionString)
             );
 
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services
+                .AddSession()
+                .AddControllersWithViews()
+                .AddSessionStateTempDataProvider()
+                .AddRazorRuntimeCompilation();
 
-            services.AddHttpClient("EbayAPI", config =>
+            services.AddHttpClient("AllPurposeJsonAPI", config =>
             {
-                config.BaseAddress = new Uri(Configuration.GetValue<string>("EbayAPI:Base"));
+                config.Timeout = TimeSpan.FromSeconds(10);
                 config.DefaultRequestHeaders.Accept.Clear();
                 config.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
+
+            /*
+            EbayAPIAuthService and ForExAPIService are singletons since
+            both of them hold values that must be avaialable for other services
+            and with Scoped and Transient those values will be lost
+
+            In addition, spinning up authentication and exchange service with every http request
+            puts a strain on performance
+
+            For the same performance considerations EbayAPIProvider and StatsService are also a singletons
+            */
 
             /*
             Registering auth service not through AddHostedService, but as singletone
@@ -57,7 +76,16 @@ namespace Inventorizer
             services.AddSingleton<EbayAPIAuthService>();
             services.AddSingleton<IHostedService>(sp => sp.GetService<EbayAPIAuthService>());
 
+            /*
+            Doing the same for foreign exchange service, so that Stats
+            can access foreign exchange rates via DI
+            */
+            services.AddSingleton<ForExAPIService>();
+            services.AddSingleton<IHostedService>(sp => sp.GetService<ForExAPIService>());
+
             services.AddSingleton<EbayAPIProvider>();
+
+            services.AddSingleton<StatsService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -79,6 +107,8 @@ namespace Inventorizer
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

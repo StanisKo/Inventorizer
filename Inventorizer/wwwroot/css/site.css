@@ -72,6 +72,10 @@ body {
 
 /* Custom */
 
+.table td, .table th, .dropdown-toggle {
+  font-size: 12px;
+}
+
 .table td {
   vertical-align: middle;
 }
@@ -84,4 +88,8 @@ body {
 
 .align-left > a {
   margin: 0.25em;
+}
+
+.hidden {
+  display: none;
 }
