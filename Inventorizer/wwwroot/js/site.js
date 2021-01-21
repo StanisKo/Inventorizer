@@ -28,9 +28,22 @@
 
                 const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
 
-                $(node).siblings(".market-price").first().text(`€ ${formattedMarketPrice}`);
+                const marketPriceNode = $(node).siblings(".market-price").first();
 
-                $(node).siblings(".gain-loss").first().text(`€ ${formattedGainLoss}`);
+                const gainLossNode = $(node).siblings(".gain-loss").first();
+
+                marketPriceNode.text(`€ ${formattedMarketPrice}`);
+
+                gainLossNode.text(`€ ${formattedGainLoss}`);
+
+                if (formattedGainLoss > 0)
+                {
+                    gainLossNode.css({ "color": "green"});
+                }
+                else if (formattedGainLoss < 0)
+                {
+                    gainLossNode.css({ "color": "red"});
+                }
 
             });
 

@@ -80,16 +80,42 @@
                     <td class="date-of-purchase">
                         @item.PurchaseDate
                     </td>
-                    <td class="align-left">
-                        <a class="btn btn-primary text-white" asp-action="CreateOrUpdate" asp-route-Id="@item.Item_Id">
-                            Edit
-                        </a>
-                        <a class="btn btn-info text-white" asp-action="CreateOrUpdateDetail" asp-route-Id="@item.Item_Id">
-                            Details
-                        </a>
-                        <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.Item_Id">
-                            Delete
-                        </a>
+                    <td>
+                        <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            Actions
+                        </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="CreateOrUpdate"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Edit
+                                </a>
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="CreateOrUpdateDetail"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Details
+                                </a>
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="Delete"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 }
