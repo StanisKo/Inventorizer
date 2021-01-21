@@ -16,6 +16,12 @@ using Inventorizer.API.Base;
 
 namespace Inventorizer.API.Ebay.Auth
 {
+    /*
+    A background service that retrieves application access token on boot
+    and remints it based on interval provided by ebay authentication service
+
+    Makes token available to EbayAPIProvider via DI
+    */
     public class EbayAPIAuthService : BaseAPI<EbayAPIAuthService>, IHostedService
     {
         private string _clientId;
@@ -39,7 +45,7 @@ namespace Inventorizer.API.Ebay.Auth
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before authentication job started");
+                _logger.LogError("Cancellation request was received before authentication service started");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }
@@ -65,7 +71,7 @@ namespace Inventorizer.API.Ebay.Auth
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError("Cancellation request is received before authentication job stopped");
+                _logger.LogError("Cancellation request was received before authentication service stopped");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }

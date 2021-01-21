@@ -72,6 +72,10 @@ body {
 
 /* Custom */
 
+.table td, .table th, .dropdown-toggle {
+  font-size: 12px;
+}
+
 .table td {
   vertical-align: middle;
 }

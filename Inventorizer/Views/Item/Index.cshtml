@@ -9,7 +9,7 @@
 <br />
 <br />
 <div class="alert alert-info hidden" role="alert">
-    Loading prices, please wait
+    Loading market prices, please wait
 </div>
 <div class="border p-4 bg-white">
     <div class="row">
@@ -33,6 +33,12 @@
                         Price
                     </th>
                     <th>
+                        Market Price
+                    </th>
+                    <th>
+                        Gain/Loss
+                    </th>
+                    <th>
                         Category
                     </th>
                     <th>
@@ -46,11 +52,17 @@
                 @foreach (var item in Model.Items)
                 {
                 <tr>
-                    <td class="itemName">
+                    <td class="item-name">
                         @item.Name
                     </td>
                     <td class="price">
                         @item.Price
+                    </td>
+                    <td class="market-price">
+                        --
+                    </td>
+                    <td class="gain-loss">
+                        --
                     </td>
                     <td>
                         @item.Category.Name
@@ -68,16 +80,42 @@
                     <td class="date-of-purchase">
                         @item.PurchaseDate
                     </td>
-                    <td class="align-left">
-                        <a class="btn btn-primary text-white" asp-action="CreateOrUpdate" asp-route-Id="@item.Item_Id">
-                            Edit
-                        </a>
-                        <a class="btn btn-info text-white" asp-action="CreateOrUpdateDetail" asp-route-Id="@item.Item_Id">
-                            Details
-                        </a>
-                        <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.Item_Id">
-                            Delete
-                        </a>
+                    <td>
+                        <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            Actions
+                        </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="CreateOrUpdate"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Edit
+                                </a>
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="CreateOrUpdateDetail"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Details
+                                </a>
+                                <a
+                                    class="dropdown-item"
+                                    asp-action="Delete"
+                                    asp-route-Id="@item.Item_Id"
+                                >
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 }

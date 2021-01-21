@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -12,6 +13,7 @@ using Inventorizer_Models.Models;
 using Inventorizer_Models.ViewModels;
 
 using Inventorizer.Controllers.Base;
+using Inventorizer.Shared;
 
 namespace Inventorizer.Controllers
 {
@@ -41,6 +43,18 @@ namespace Inventorizer.Controllers
                 .Skip((_pageIndex - 1) * _PAGE_SIZE)
                 .Take(_PAGE_SIZE)
                 .ToListAsync();
+
+            /*
+            Store names and prices in TempData dict
+            so that MarketPricesController can access them and perform requests to API and calculations
+
+            We also serialize it since TempData does not support storing complex types
+            */
+            IEnumerable<ItemFromDb> itemsFromDatabase = items.Select(
+                item => new ItemFromDb { Name = item.Name, Price = item.Price }
+            );
+
+            TempData["itemsFromDatabase"] = JsonSerializer.Serialize<IEnumerable<ItemFromDb>>(itemsFromDatabase);
 
             ItemIndexViewModel itemIndexViewModel = new ItemIndexViewModel
             {

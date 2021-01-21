@@ -11,11 +11,24 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.WebUtilities;
 
+using Inventorizer.Shared;
 using Inventorizer.API.Base;
 using Inventorizer.API.Ebay.Auth;
 
 namespace Inventorizer.API.Ebay.Provider
 {
+    /*
+    A provider that is responsible for retrieving market prices for provided item names
+
+    Retrieves first 10 results for each name and return a collection of structs in the shape of:
+    {
+        string Name;
+
+        IEnumerable<double> Prices;
+    }
+
+    Each call is authenticated with a token provided by EbayAPIAuthService
+    */
     public class EbayAPIProvider : BaseAPI<EbayAPIProvider>
     {
         private readonly EbayAPIAuthService _ebayAPIAuthService;
@@ -47,7 +60,7 @@ namespace Inventorizer.API.Ebay.Provider
         Returns a collection of structs each containing item name
         and the prices of first 10 results for each name
         */
-        public async Task <IEnumerable<ItemPrices>> RetrieveItemPrices(IEnumerable<string> itemNames)
+        public async Task <IEnumerable<MarketPrices>> RetrieveMarketPrices(IEnumerable<string> itemNames)
         {
             HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
@@ -57,13 +70,13 @@ namespace Inventorizer.API.Ebay.Provider
                 _ebayAPIAuthService.ParsedAuth.access_token
             );
 
-            IEnumerable<Task<ItemPrices>> requestsToAPI = itemNames.Select(
+            IEnumerable<Task<MarketPrices>> requestsToAPI = itemNames.Select(
                 itemName => RetrievePricesForSingleItem(itemName, client)
             );
 
-            IEnumerable<ItemPrices> itemPrices = await Task.WhenAll(requestsToAPI);
+            IEnumerable<MarketPrices> marketPrices = await Task.WhenAll(requestsToAPI);
 
-            return itemPrices;
+            return marketPrices;
         }
 
         /*
@@ -71,9 +84,9 @@ namespace Inventorizer.API.Ebay.Provider
         extracts their prices in a collection
         and returns a struct with an item name and the prices
         */
-        private async Task <ItemPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
+        private async Task <MarketPrices> RetrievePricesForSingleItem(string itemName, HttpClient client)
         {
-            IEnumerable<double> itemPrices = new List<double>();
+            IEnumerable<double> marketPrices = new List<double>();
 
             string requestURL = QueryHelpers.AddQueryString(
                 _configuration["EbayAPI:Base"],
@@ -101,8 +114,8 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                // If no prices for the provided item name are available, return empty list
-                itemPrices =
+                // If there are no results for provided item name, return empty list
+                marketPrices =
                     parsedAPIResponse.ItemSummaries?.Select(s => Convert.ToDouble(s.Price.Value)) ?? new List<double>();
             }
             else
@@ -115,7 +128,7 @@ namespace Inventorizer.API.Ebay.Provider
                 throw new Exception(error);
             }
 
-            return new ItemPrices() { Name = itemName, Prices = itemPrices };
+            return new MarketPrices() { Name = itemName, Prices = marketPrices };
         }
     }
 }

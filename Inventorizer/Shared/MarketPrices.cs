@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Inventorizer.API.Ebay.Provider
+namespace Inventorizer.Shared
 {
-    public struct ItemPrices
+    public struct MarketPrices
     {
         public string Name { get; set; }
 

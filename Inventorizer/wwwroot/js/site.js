@@ -17,19 +17,37 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const key = "itemNames";
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
 
-        // Grab names from html nodes
-        const itemNames = $(".itemName").map((_, node) => $(node).text().trim());
+        $.get(url).done((itemStats) => {
 
-        // Declare base URL
-        const baseURL = new URL(`${window.location.protocol}//${window.location.host}/api/prices`);
+            $(".item-name").each((_, node) => {
+                const relevantItem = itemStats.find(item => item.name === $(node).text().trim());
 
-        // Add names to querystring
-        const querystring = itemNames.toArray().map((name) => `${key}=${name}`).join("&");
+                const formattedMarketPrice = Number(relevantItem.marketPrice).toFixed(2);
 
-        $.get(`${baseURL}?${querystring}`).done((itemPrices) => {
-            console.log(itemPrices);
+                const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
+
+                const marketPriceNode = $(node).siblings(".market-price").first();
+
+                const gainLossNode = $(node).siblings(".gain-loss").first();
+
+                marketPriceNode.text(formattedMarketPrice > 0 ? `€ ${formattedMarketPrice}` : "No results");
+
+                gainLossNode.text(`${formattedGainLoss > 0 ? `+${formattedGainLoss}` : formattedGainLoss}%`);
+
+                if (formattedGainLoss > 0)
+                {
+                    gainLossNode.css({ "color": "green" });
+                }
+                else if (formattedGainLoss < 0)
+                {
+                    gainLossNode.css({ "color": "red" });
+                }
+
+                gainLossNode.css({ "font-weight": "bold" });
+
+            });
 
             setTimeout(() => $(".alert-info").slideUp(), 1500);
         });
