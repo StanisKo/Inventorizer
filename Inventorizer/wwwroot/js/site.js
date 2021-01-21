@@ -32,18 +32,20 @@
 
                 const gainLossNode = $(node).siblings(".gain-loss").first();
 
-                marketPriceNode.text(`€ ${formattedMarketPrice}`);
+                marketPriceNode.text(formattedMarketPrice > 0 ? `€ ${formattedMarketPrice}` : "No results");
 
-                gainLossNode.text(`€ ${formattedGainLoss}`);
+                gainLossNode.text(`${formattedGainLoss > 0 ? `+${formattedGainLoss}` : formattedGainLoss}%`);
 
                 if (formattedGainLoss > 0)
                 {
-                    gainLossNode.css({ "color": "green"});
+                    gainLossNode.css({ "color": "green" });
                 }
                 else if (formattedGainLoss < 0)
                 {
-                    gainLossNode.css({ "color": "red"});
+                    gainLossNode.css({ "color": "red" });
                 }
+
+                gainLossNode.css({ "font-weight": "bold" });
 
             });
 
