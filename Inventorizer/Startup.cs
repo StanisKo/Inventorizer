@@ -59,9 +59,14 @@ namespace Inventorizer
             });
 
             /*
-            TODO:
+            EbayAPIAuthService and ForExAPIService are singletons since
+            both of them hold values that must be avaialable for other services
+            and with Scoped and Transient those values will be lost
 
-            Figure out the best way to inject services and avoid singletone
+            In addition, spinning up authentication and exchange service with every http request
+            puts a strain on performance
+
+            For the same performance considerations EbayAPIProvider and StatsService are also a singletons
             */
 
             /*
@@ -80,7 +85,7 @@ namespace Inventorizer
 
             services.AddSingleton<EbayAPIProvider>();
 
-            services.AddTransient<StatsModule>();
+            services.AddSingleton<StatsService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

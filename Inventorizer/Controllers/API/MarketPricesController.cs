@@ -14,7 +14,7 @@ namespace Inventorizer.Controllers.API
 {
     /*
     A Web API controller that requests item prices via EbayAPIProvider,
-    does calculations on the degree of depreciation/appreciation via StatsModule,
+    does calculations on the degree of depreciation/appreciation via StatsService,
     and returns a serialized collection of structs with the following shape:
 
     {
@@ -36,13 +36,13 @@ namespace Inventorizer.Controllers.API
     {
         private readonly EbayAPIProvider _ebayAPIProvider;
 
-        private readonly StatsModule _statsModule;
+        private readonly StatsService _statsService;
 
-        public MarketPricesController(EbayAPIProvider ebayAPIProvider, StatsModule statsModule)
+        public MarketPricesController(EbayAPIProvider ebayAPIProvider, StatsService statsService)
         {
             _ebayAPIProvider = ebayAPIProvider;
 
-            _statsModule = statsModule;
+            _statsService = statsService;
         }
 
         [HttpGet]
@@ -63,7 +63,7 @@ namespace Inventorizer.Controllers.API
                 MarketPrices = marketPrices.FirstOrDefault(itemFromAPI => itemFromAPI.Name == itemFromDb.Name).Prices
             });
 
-            IEnumerable<ItemStats> itemStats = _statsModule.CalculateGainLoss(statsInputs);
+            IEnumerable<ItemStats> itemStats = _statsService.CalculateGainLoss(statsInputs);
 
             return Ok(itemStats);
         }

@@ -6,11 +6,11 @@ using Inventorizer.API.ForEx;
 
 namespace Inventorizer.Stats
 {
-    public class StatsModule
+    public class StatsService
     {
         private readonly ForExAPIService _forExAPIService;
 
-        public StatsModule(ForExAPIService forExAPIService)
+        public StatsService(ForExAPIService forExAPIService)
         {
             _forExAPIService = forExAPIService;
         }
