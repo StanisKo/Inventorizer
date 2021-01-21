@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 
+using Inventorizer.Stats;
 using Inventorizer.Shared;
 using Inventorizer.API.Ebay.Provider;
 
@@ -13,7 +14,7 @@ namespace Inventorizer.Controllers.API
 {
     /*
     A Web API controller that requests item prices via EbayAPIProvider,
-    does calculations on whether items depreciate/appreciate over time (and change rate in %) via Stats,
+    does calculations on the degree of depreciation/appreciation via StatsModule,
     and returns a serialized collection of structs with the following shape:
 
     {
@@ -21,7 +22,7 @@ namespace Inventorizer.Controllers.API
 
         double MarketPrice;
 
-        float ChangeOverTime;
+        double GainLoss;
     }
 
     Inherits from Controller and not ControllerBase to allow exhange of data
@@ -35,9 +36,13 @@ namespace Inventorizer.Controllers.API
     {
         private readonly EbayAPIProvider _ebayAPIProvider;
 
-        public MarketPricesController(EbayAPIProvider ebayAPIProvider)
+        private readonly StatsModule _statsModule;
+
+        public MarketPricesController(EbayAPIProvider ebayAPIProvider, StatsModule statsModule)
         {
             _ebayAPIProvider = ebayAPIProvider;
+
+            _statsModule = statsModule;
         }
 
         [HttpGet]
@@ -51,12 +56,16 @@ namespace Inventorizer.Controllers.API
                 itemsFromDatabase.Select(item => item.Name)
             );
 
-            List<ItemStats> test = new List<ItemStats>()
+            IEnumerable<StatsInput> statsInputs = itemsFromDatabase.Select(itemFromDb => new StatsInput()
             {
-                new ItemStats { Name = "test", MarketPrice = 1, ChangeOverTime = 1 }
-            };
+                ItemName = itemFromDb.Name,
+                PurchasePrice = itemFromDb.Price,
+                MarketPrices = marketPrices.FirstOrDefault(itemFromAPI => itemFromAPI.Name == itemFromDb.Name).Prices
+            });
 
-            return Ok(test);
+            IEnumerable<ItemStats> itemStats = _statsModule.CalculateGainLoss(statsInputs);
+
+            return Ok(itemStats);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Inventorizer.Shared
 
         public double MarketPrice { get; set; }
 
-        public float ChangeOverTime { get; set; }
+        public double GainLoss { get; set; }
     }
 }

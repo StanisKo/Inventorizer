@@ -16,6 +16,8 @@ using Inventorizer.API.Ebay.Auth;
 using Inventorizer.API.Ebay.Provider;
 using Inventorizer.API.ForEx;
 
+using Inventorizer.Stats;
+
 namespace Inventorizer
 {
     public class Startup
@@ -57,6 +59,12 @@ namespace Inventorizer
             });
 
             /*
+            TODO:
+
+            Figure out the best way to inject services and avoid singletone
+            */
+
+            /*
             Registering auth service not through AddHostedService, but as singletone
             to make sure API provider can access auth token from the auth service via DI
             */
@@ -71,6 +79,8 @@ namespace Inventorizer
             services.AddSingleton<IHostedService>(sp => sp.GetService<ForExAPIService>());
 
             services.AddSingleton<EbayAPIProvider>();
+
+            services.AddTransient<StatsModule>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

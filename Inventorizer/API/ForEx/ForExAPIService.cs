@@ -1,6 +1,6 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Collections.Generic;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.WebUtilities;
 
 using Inventorizer.API.Base;
 
@@ -19,6 +20,9 @@ namespace Inventorizer.API.ForEx
     */
     public class ForExAPIService : BaseAPI<ForExAPIService>, IHostedService
     {
+        // Retrieve currencies already quoted against USD to avoid unnecessary computations
+        private const string _quoteAgainst = "USD";
+
         public ParsedExchangeRate ParsedExchangeRate { get; private set; }
 
         public ForExAPIService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<ForExAPIService> logger)
@@ -57,9 +61,14 @@ namespace Inventorizer.API.ForEx
         {
             HttpClient client = _clientFactory.CreateClient("AllPurposeJsonAPI");
 
+            string requestURL = QueryHelpers.AddQueryString(
+                _configuration["ForExAPI:Base"],
+                new Dictionary<string, string>() { { "base", _quoteAgainst } }
+            );
+
             HttpRequestMessage requestToForExAPI = new HttpRequestMessage(
                 HttpMethod.Get,
-                _configuration["ForExAPI:Base"]
+                requestURL
             );
 
             HttpResponseMessage responseFromForExAPI = await client.SendAsync(requestToForExAPI);

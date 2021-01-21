@@ -1,6 +1,6 @@
 namespace Inventorizer.API.ForEx
 {
-    // We only need US dollars ...
+    // We only need EUR rates ...
     public struct ParsedExchangeRate
     {
         public Rates Rates { get; set; }
@@ -8,6 +8,6 @@ namespace Inventorizer.API.ForEx
 
     public struct Rates
     {
-        public double USD { get; set; }
+        public double EUR { get; set; }
     }
 }
