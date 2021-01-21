@@ -19,8 +19,20 @@
 
         const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
 
-        $.get(url).done((MarketPrices) => {
-            console.log(MarketPrices);
+        $.get(url).done((itemStats) => {
+
+            $(".item-name").each((_, node) => {
+                const relevantItem = itemStats.find(item => item.name === $(node).text().trim());
+
+                const formattedMarketPrice = Number(relevantItem.marketPrice).toFixed(2);
+
+                const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
+
+                $(node).siblings(".market-price").first().text(formattedMarketPrice);
+
+                $(node).siblings(".gain-loss").first().text(formattedGainLoss);
+
+            });
 
             setTimeout(() => $(".alert-info").slideUp(), 1500);
         });

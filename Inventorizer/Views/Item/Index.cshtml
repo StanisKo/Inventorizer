@@ -33,6 +33,12 @@
                         Price
                     </th>
                     <th>
+                        Market Price
+                    </th>
+                    <th>
+                        Gain/Loss
+                    </th>
+                    <th>
                         Category
                     </th>
                     <th>
@@ -46,11 +52,17 @@
                 @foreach (var item in Model.Items)
                 {
                 <tr>
-                    <td class="itemName">
+                    <td class="item-name">
                         @item.Name
                     </td>
                     <td class="price">
                         @item.Price
+                    </td>
+                    <td class="price market-price">
+                        
+                    </td>
+                    <td class="gain-loss">
+                        
                     </td>
                     <td>
                         @item.Category.Name
