@@ -1,21 +1,20 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Inventorizer.Controllers.Base;
+
 using Inventorizer_Models.Models;
+using Inventorizer_Models.ViewModels;
 using Inventorizer_DataAccess.Data;
-
-/*
-TODO:
-
-Add pagination
-*/
 
 namespace Inventorizer.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : CustomBaseController
     {
         private readonly ApplicationDbContext _database;
 
@@ -25,11 +24,30 @@ namespace Inventorizer.Controllers
         }
 
         [HttpGet]
-        public async Task <IActionResult> Index()
+        public async Task <IActionResult> Index(int? pageIndex)
         {
-            List<Category> categories =  await _database.Categories.AsNoTracking().ToListAsync();
+            int categoriesCount = await _database.Categories.CountAsync();
 
-            return View(categories);
+            _pageIndex = pageIndex ?? 1;
+
+            _totalPages = (int)Math.Ceiling(categoriesCount / (double)_PAGE_SIZE);
+
+            List<Category> categories =  await _database.Categories
+                .AsNoTracking()
+                .OrderBy(c => c.Name)
+                .Skip((_pageIndex - 1) * _PAGE_SIZE)
+                .Take(_PAGE_SIZE)
+                .ToListAsync();
+
+            CategoryIndexViewModel categoryIndexViewModel = new CategoryIndexViewModel
+            {
+                Categories = categories,
+                PageIndex = _pageIndex,
+                HasNextPage = _hasNextPage,
+                HasPreviousPage = _hasPreviousPage
+            };
+
+            return View(categoryIndexViewModel);
         }
 
         [HttpGet]

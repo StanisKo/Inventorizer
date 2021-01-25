@@ -46,7 +46,7 @@ namespace Inventorizer.Controllers
 
             /*
             Store names and prices in TempData dict
-            so that MarketPricesController can access them and perform requests to API and calculations
+            so that ItemStatsController can access them and perform requests to API and calculations
 
             We also serialize it since TempData does not support storing complex types
             */

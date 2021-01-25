@@ -27,18 +27,18 @@ namespace Inventorizer.Controllers.API
 
     Inherits from Controller and not ControllerBase to allow exhange of data
     (item names and prices retrieved from database)
-    between ItemController and MarketPricesController via TempData dictionary
+    between ItemController and ItemStatsController via TempData dictionary
     */
     [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
-    public class MarketPricesController : Controller
+    public class ItemStatsController : Controller
     {
         private readonly EbayAPIProvider _ebayAPIProvider;
 
         private readonly StatsService _statsService;
 
-        public MarketPricesController(EbayAPIProvider ebayAPIProvider, StatsService statsService)
+        public ItemStatsController(EbayAPIProvider ebayAPIProvider, StatsService statsService)
         {
             _ebayAPIProvider = ebayAPIProvider;
 

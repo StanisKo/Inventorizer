@@ -17,39 +17,43 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/itemstats`);
 
-        $.get(url).done((itemStats) => {
+        $.ajax({
+            url: url,
+            error: () => {
+                $(".alert-info").text("Seems like Ebay is unresponsive, we'll reload shortly");
+                $(".alert-info").removeClass("alert-info").addClass("alert-warning");
 
-            $(".item-name").each((_, node) => {
-                const relevantItem = itemStats.find(item => item.name === $(node).text().trim());
+                setTimeout(() => window.location.reload(), 1500);
+            },
+            success: (itemStats) => {
+                $(".item-name").each((_, node) => {
+                    const relevantItem = itemStats.find(item => item.name === $(node).text().trim());
 
-                const formattedMarketPrice = Number(relevantItem.marketPrice).toFixed(2);
+                    const formattedMarketPrice = Number(relevantItem.marketPrice).toFixed(2);
+                    const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
 
-                const formattedGainLoss = Number(relevantItem.gainLoss).toFixed(2);
+                    const marketPriceNode = $(node).siblings(".market-price").first();
+                    const gainLossNode = $(node).siblings(".gain-loss").first();
 
-                const marketPriceNode = $(node).siblings(".market-price").first();
+                    marketPriceNode.text(formattedMarketPrice > 0 ? `€ ${formattedMarketPrice}` : "No results");
+                    gainLossNode.text(`${formattedGainLoss > 0 ? `+${formattedGainLoss}` : formattedGainLoss}%`);
 
-                const gainLossNode = $(node).siblings(".gain-loss").first();
+                    if (formattedGainLoss > 0)
+                    {
+                        gainLossNode.css({ "color": "green" });
+                    }
+                    else if (formattedGainLoss < 0)
+                    {
+                        gainLossNode.css({ "color": "red" });
+                    }
 
-                marketPriceNode.text(formattedMarketPrice > 0 ? `€ ${formattedMarketPrice}` : "No results");
+                    gainLossNode.css({ "font-weight": "bold" });
+                });
 
-                gainLossNode.text(`${formattedGainLoss > 0 ? `+${formattedGainLoss}` : formattedGainLoss}%`);
-
-                if (formattedGainLoss > 0)
-                {
-                    gainLossNode.css({ "color": "green" });
-                }
-                else if (formattedGainLoss < 0)
-                {
-                    gainLossNode.css({ "color": "red" });
-                }
-
-                gainLossNode.css({ "font-weight": "bold" });
-
-            });
-
-            setTimeout(() => $(".alert-info").slideUp(), 1500);
-        });
+                setTimeout(() => $(".alert-info").slideUp(), 1500);
+            }
+        })
     }
 });
