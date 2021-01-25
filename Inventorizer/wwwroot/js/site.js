@@ -50,7 +50,6 @@
                     }
 
                     gainLossNode.css({ "font-weight": "bold" });
-
                 });
 
                 setTimeout(() => $(".alert-info").slideUp(), 1500);
