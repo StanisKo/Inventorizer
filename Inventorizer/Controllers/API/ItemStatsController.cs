@@ -63,7 +63,7 @@ namespace Inventorizer.Controllers.API
                 MarketPrices = marketPrices.FirstOrDefault(itemFromAPI => itemFromAPI.Name == itemFromDb.Name).Prices
             });
 
-            IEnumerable<ItemStats> itemStats = _statsService.CalculateGainLoss(statsInputs);
+            IEnumerable<ItemStats> itemStats = _statsService.CalculateMarketPriceAndGainLoss(statsInputs);
 
             return Ok(itemStats);
         }

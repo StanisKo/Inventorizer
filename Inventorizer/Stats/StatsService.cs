@@ -20,7 +20,7 @@ namespace Inventorizer.Stats
             _forExAPIService = forExAPIService;
         }
 
-        public IEnumerable<ItemStats> CalculateGainLoss(IEnumerable<StatsInput> statsInput)
+        public IEnumerable<ItemStats> CalculateMarketPriceAndGainLoss(IEnumerable<StatsInput> statsInput)
         {
             IEnumerable<ItemStats> itemStats = statsInput.Select(input => {
                 /*
