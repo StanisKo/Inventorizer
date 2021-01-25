@@ -13,8 +13,8 @@
         return `${dateOfPurchase.getDate()}-${dateOfPurchase.getMonth() + 1}-${dateOfPurchase.getFullYear()}`
     });
 
-    // Request item prices from item index view
-    if (window.location.pathname === '/Item') {
+    // Request item prices from item index view if there is at least one item
+    if (window.location.pathname === '/Item' && $(".item-name").length > 0) {
         $(".alert-info").slideDown();
 
         const url = new URL(`${window.location.protocol}//${window.location.host}/api/itemstats`);
