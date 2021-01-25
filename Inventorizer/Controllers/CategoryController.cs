@@ -26,15 +26,15 @@ namespace Inventorizer.Controllers
         [HttpGet]
         public async Task <IActionResult> Index(int? pageIndex)
         {
-            int itemsCount = await _database.Items.CountAsync();
+            int categoriesCount = await _database.Categories.CountAsync();
 
             _pageIndex = pageIndex ?? 1;
 
-            _totalPages = (int)Math.Ceiling(itemsCount / (double)_PAGE_SIZE);
+            _totalPages = (int)Math.Ceiling(categoriesCount / (double)_PAGE_SIZE);
 
             List<Category> categories =  await _database.Categories
                 .AsNoTracking()
-                .OrderByDescending(c => c.Name)
+                .OrderBy(c => c.Name)
                 .Skip((_pageIndex - 1) * _PAGE_SIZE)
                 .Take(_PAGE_SIZE)
                 .ToListAsync();
