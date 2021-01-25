@@ -28,6 +28,10 @@ namespace Inventorizer.Controllers.API
     Inherits from Controller and not ControllerBase to allow exhange of data
     (item names and prices retrieved from database)
     between ItemController and MarketPricesController via TempData dictionary
+
+    TODO:
+
+    Rename to ItemStatsController and change the endpoint
     */
     [ApiController]
     [Route("api/[controller]")]
