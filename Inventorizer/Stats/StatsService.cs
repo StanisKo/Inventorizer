@@ -7,7 +7,7 @@ using Inventorizer.API.ForEx;
 namespace Inventorizer.Stats
 {
     /*
-    Stats service that receives a collection of with item purchase prices
+    Stats service that receives a collection with item purchase prices
     and market prices, translates market prices from USD to EUR via ForExService
     and calculates aveerage market price and gain/loss in per cent
     */
