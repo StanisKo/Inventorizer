@@ -17,7 +17,7 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/itemstats`);
 
         $.ajax({
             url: url,
