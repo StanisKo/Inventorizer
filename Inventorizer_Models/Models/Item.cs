@@ -18,8 +18,6 @@ namespace Inventorizer_Models.Models
         /*
         PurchaseDate is not required since it is oftentimes
         harder to recall time of purchase rather than price
-
-        Mind, for items with no purchase date, we won't be able to calculate depreciation over time
         */
         public DateTime PurchaseDate { get; set; }
 
