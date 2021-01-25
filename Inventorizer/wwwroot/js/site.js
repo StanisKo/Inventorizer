@@ -17,15 +17,15 @@
     if (window.location.pathname === '/Item') {
         $(".alert-info").slideDown();
 
-        const url = new URL(`${window.location.protocol}//${window.location.host}/api/marketprices`);
+        const url = new URL(`${window.location.protocol}//${window.location.host}/api/itemstats`);
 
         $.ajax({
             url: url,
             error: () => {
-                $(".alert-info").text("Seems like Ebay is unresponsive, let's try it again");
+                $(".alert-info").text("Seems like Ebay is unresponsive, we'll reload shortly");
                 $(".alert-info").removeClass("alert-info").addClass("alert-warning");
 
-                window.location.reload();
+                setTimeout(() => window.location.reload(), 1500);
             },
             success: (itemStats) => {
                 $(".item-name").each((_, node) => {
@@ -50,7 +50,6 @@
                     }
 
                     gainLossNode.css({ "font-weight": "bold" });
-
                 });
 
                 setTimeout(() => $(".alert-info").slideUp(), 1500);

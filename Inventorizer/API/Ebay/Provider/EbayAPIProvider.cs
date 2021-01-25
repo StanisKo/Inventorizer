@@ -124,8 +124,6 @@ namespace Inventorizer.API.Ebay.Provider
                     $"Call to API failed. {(int)responseFromAPI.StatusCode}: {responseFromAPI.ReasonPhrase}";
 
                 _logger.LogError(error);
-
-                throw new Exception(error);
             }
 
             return new MarketPrices() { Name = itemName, Prices = marketPrices };

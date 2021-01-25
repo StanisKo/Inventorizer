@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventorizer.Controllers.Base
 {
+    /*
+    Base controller that conceals some basic pagination functionality
+    */
     public abstract class CustomBaseController : Controller
     {
         protected const int _PAGE_SIZE = 10;
