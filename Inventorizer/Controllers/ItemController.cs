@@ -142,8 +142,13 @@ namespace Inventorizer.Controllers
             }
             else
             {
-                _database.ItemDetails.Update(item.ItemDetail);
+                Item itemToUpdateDetail = await _database.Items
+                    .Include(i => i.ItemDetail)
+                    .FirstOrDefaultAsync(i => i.Item_Id == item.Item_Id);
 
+                itemToUpdateDetail.ItemDetail = item.ItemDetail;
+
+                _database.Items.Attach(itemToUpdateDetail);
             }
 
             await _database.SaveChangesAsync();
