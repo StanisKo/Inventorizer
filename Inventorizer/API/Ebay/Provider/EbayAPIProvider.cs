@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using System.Globalization;
 
 using System.Linq;
 using System.Threading.Tasks;
@@ -114,9 +115,16 @@ namespace Inventorizer.API.Ebay.Provider
                 ParsedAPIResponse parsedAPIResponse = await responseFromAPI.Content
                     .ReadFromJsonAsync<ParsedAPIResponse>();
 
-                // If there are no results for provided item name, return empty list
+                /*
+                If there are no results for provided item name, return empty list
+
+                We also specify FormatProvider to avoid parsing errors
+
+                Running this without formatProvider on windows 10 and on MacOS yields different resuts
+                */
                 marketPrices =
-                    parsedAPIResponse.ItemSummaries?.Select(s => Convert.ToDouble(s.Price.Value)) ?? new List<double>();
+                    parsedAPIResponse.ItemSummaries?.Select(
+                        s => Double.Parse(s.Price.Value,  CultureInfo.InvariantCulture)) ?? new List<double>();
             }
             else
             {
