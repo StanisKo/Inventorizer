@@ -120,11 +120,11 @@ namespace Inventorizer.API.Ebay.Provider
 
                 We also specify FormatProvider to avoid parsing errors
 
-                Running this without formatProvider on windows 10 and on MacOS yields different resuts
+                Running this without formatProvider on Windows 10 and on MacOS yields different resuts
                 */
                 marketPrices =
                     parsedAPIResponse.ItemSummaries?.Select(
-                        s => Double.Parse(s.Price.Value,  CultureInfo.InvariantCulture)) ?? new List<double>();
+                        s => Double.Parse(s.Price.Value, CultureInfo.InvariantCulture)) ?? new List<double>();
             }
             else
             {
