@@ -65,8 +65,6 @@ namespace Inventorizer
 
             In addition, spinning up authentication and exchange service with every http request
             puts a strain on performance
-
-            For the same performance considerations EbayAPIProvider and StatsService are also a singletons
             */
 
             /*
@@ -85,7 +83,7 @@ namespace Inventorizer
 
             services.AddSingleton<EbayAPIProvider>();
 
-            services.AddSingleton<StatsService>();
+            services.AddScoped<StatsService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
