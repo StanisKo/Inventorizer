@@ -133,7 +133,6 @@ namespace Inventorizer.Controllers
         {
             if (item.ItemDetail.ItemDetail_Id == 0)
             {
-                // Bind item detail with relevant item entity
                 ItemDetail itemDetailToCreate = item.ItemDetail;
 
                 itemDetailToCreate.Item_Id = item.Item_Id;
@@ -142,9 +141,7 @@ namespace Inventorizer.Controllers
             }
             else
             {
-                Item itemToUpdateDetail = await _database.Items
-                    .Include(i => i.ItemDetail)
-                    .FirstOrDefaultAsync(i => i.Item_Id == item.Item_Id);
+                Item itemToUpdateDetail = await _database.Items.FirstOrDefaultAsync(i => i.Item_Id == item.Item_Id);
 
                 itemToUpdateDetail.ItemDetail = item.ItemDetail;
 
